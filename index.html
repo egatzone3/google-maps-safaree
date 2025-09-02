@@ -65,6 +65,19 @@
                 <!-- News items will be populated here by JavaScript -->
             </div>
         </section>
+        
+        <!-- Modal for AI Summary -->
+        <div id="summaryModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
+            <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-xl font-bold text-gray-100">✨ สรุปข่าว</h4>
+                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-100">&times;</button>
+                </div>
+                <div id="summaryContent" class="text-gray-300 text-left">
+                    <p>กำลังสร้างสรุปข้อมูล...</p>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -77,18 +90,19 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             // Register the Service Worker for PWA functionality
-            try {
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('./service-worker.js')
-                        .then(registration => {
-                            console.log('Service Worker registered with scope:', registration.scope);
-                        })
-                        .catch(err => {
-                            console.error('Service Worker registration failed:', err);
-                        });
-                }
-            } catch (error) {
-                console.error('Service Worker registration failed (try/catch):', error);
+            if ('serviceWorker' in navigator) {
+                // Determine the correct path for the service worker script
+                const serviceWorkerUrl = window.location.protocol === 'blob:'
+                    ? './service-worker.js' // Use relative path in local blob environment
+                    : new URL('./service-worker.js', window.location.href);
+
+                navigator.serviceWorker.register(serviceWorkerUrl)
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.error('Service Worker registration failed:', err);
+                    });
             }
 
             const data = [
@@ -119,9 +133,57 @@
             const newsContent = document.getElementById('newsContent');
             const mapButtonsContainer = document.getElementById('mapButtons');
             const combinedMapIframe = document.getElementById('combinedMap');
+            const summaryModal = document.getElementById('summaryModal');
+            const summaryContent = document.getElementById('summaryContent');
+            const closeModalBtn = document.getElementById('closeModalBtn');
 
             let isDarkMode = true;
             
+            // Function to handle fetching and summarizing news with Gemini API
+            const summarizeNews = async (url) => {
+                summaryModal.classList.remove('hidden');
+                summaryContent.innerHTML = '<p class="text-center">กำลังสร้างสรุปข้อมูล...</p>';
+
+                const systemPrompt = "Act as a professional news summarizer. Provide a concise, single-paragraph summary of the key findings from the article. The summary should be in Thai and be easy to understand.";
+                const userQuery = `Summarize the content of this article: ${url}`;
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: userQuery }] }],
+                    tools: [{ "google_search": {} }],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                };
+
+                let response;
+                try {
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    const candidate = result.candidates?.[0];
+
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        const text = candidate.content.parts[0].text;
+                        summaryContent.innerHTML = `<p>${text}</p>`;
+                    } else {
+                        summaryContent.innerHTML = '<p class="text-red-400">ไม่สามารถสร้างสรุปข้อมูลได้ในขณะนี้ โปรดลองใหม่อีกครั้ง</p>';
+                    }
+                } catch (error) {
+                    console.error('Error fetching summary:', error);
+                    summaryContent.innerHTML = '<p class="text-red-400">เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองใหม่อีกครั้ง</p>';
+                }
+            };
+
+            closeModalBtn.addEventListener('click', () => {
+                summaryModal.classList.add('hidden');
+                summaryContent.innerHTML = '';
+            });
+
             const applyTheme = () => {
                 const color = isDarkMode ? 'gray-900' : 'gray-100';
                 const text = isDarkMode ? 'gray-100' : 'gray-800';
@@ -172,9 +234,14 @@
                     newsItemDiv.innerHTML = `
                         <p class="font-semibold text-gray-200 transition-colors duration-500">${item.title}</p>
                         <p>${item.content}</p>
-                        <a href="${item.link}" target="_blank" class="mt-2 inline-block px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                            ดูเพิ่มเติม
-                        </a>
+                        <div class="flex justify-between items-center mt-2">
+                            <button onclick="summarizeNews('${item.link}')" class="inline-block px-4 py-2 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition-colors">
+                                ✨ สรุปข่าว
+                            </button>
+                            <a href="${item.link}" target="_blank" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                ดูเพิ่มเติม
+                            </a>
+                        </div>
                     `;
                     newsContent.appendChild(newsItemDiv);
                 });
