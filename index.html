@@ -71,6 +71,12 @@
             </div>
         </section>
         
+        <!-- About Section -->
+        <section class="mt-12 text-center text-gray-400 text-sm">
+            <p>&copy; 2025 แผนที่นำทาง GoogleMap-By.SAFAREE</p>
+            <p>ผู้ดูแลเว็บไซต์: Safaree Labaisor (<a href="https://www.facebook.com/lib.egat" target="_blank" class="text-blue-400 hover:underline">Facebook</a>, <a href="tel:0845071339" class="text-blue-400 hover:underline">โทร.0845071339</a>, <a href="https://line.me/ti/p/DUtMF21PbA" target="_blank" class="text-blue-400 hover:underline">Line</a>)</p>
+        </section>
+        
         <!-- Modal for AI Summary -->
         <div id="summaryModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
             <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-2xl">
@@ -87,8 +93,8 @@
     </div>
 
     <script>
-        // Function to handle fetching and summarizing news with Gemini API
-        const summarizeNews = async (url) => {
+        // Global functions for onclick handlers
+        window.summarizeNews = async (url) => {
             document.getElementById('summaryModal').classList.remove('hidden');
             document.getElementById('summaryContent').innerHTML = '<p class="text-center">กำลังสร้างสรุปข้อมูล...</p>';
 
@@ -127,8 +133,7 @@
             }
         };
 
-        // Function to handle address button click
-        const handleAddressClick = (lat, lng) => {
+        window.handleAddressClick = (lat, lng) => {
             const mapLink = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
             window.open(mapLink, '_blank');
         };
@@ -158,18 +163,17 @@
                 { unit: "หน่วย บสส.พัทลุง", mapUrl: "https://www.google.com/maps/d/embed?mid=1gz3hHP9gZ5bNvK04FBCYmRnp-QbHeM4I&ehbc=2E312F", darkColor: "bg-red-600", lightColor: "bg-red-200", address: { lat: 7.600682400046107, lng: 100.02821618589384 } },
                 { unit: "หน่วย บสส.หาดใหญ่1", mapUrl: "https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F", darkColor: "bg-orange-600", lightColor: "bg-orange-200", address: { lat: 6.995626682895144, lng: 100.43369286184985 } },
                 { unit: "หน่วย บสส.หาดใหญ่2", mapUrl: "https://www.google.com/maps/d/embed?mid=1QcJEt5MFkZHubZo4WBg_LRu53u58dICJ&ehbc=2E312F", darkColor: "bg-yellow-500", lightColor: "bg-yellow-200", address: { lat: 6.995626682895144, lng: 100.43369286184985 } },
-                { unit: "หน่วย บสส.ยะลา", mapUrl: "https://www.google.com/maps/d/embed?mid=1o_npUEGkLpBvDJotq-Mj-b3Gjk1FhHbG&ehbc=2E312F", darkColor: "bg-blue-600", lightColor: "bg-blue-200", address: { lat: 6.499050426111315, lng: 101.26783926671483 } },
+                { unit: "หน่วย บสส.ยะลา", mapUrl: "https://www.google.com/maps/d/embed?mid=1o_npUEGkLpBvDJotq-Mj-b3Gjk1hHbG&ehbc=2E312F", darkColor: "bg-blue-600", lightColor: "bg-blue-200", address: { lat: 6.499050426111315, lng: 101.26783926671483 } },
                 { unit: "หน่วย บสส.นราธิวาส", mapUrl: "https://www.google.com/maps/d/embed?mid=1768FPwu7Tv3ZKoFB8wM5Dbwzovp0BSAo&ehbc=2E312F", darkColor: "bg-gray-200", lightColor: "bg-white", address: { lat: 6.421060608745661, lng: 101.7894713541421 } },
                 { unit: "Tower 500KV", mapUrl: "https://www.google.com/maps/d/embed?mid=17Imm6bvu5AsQ7c_45qyxuVuxNNM8gt8&ehbc=2E312F", darkColor: "bg-teal-600", lightColor: "bg-teal-200", address: { lat: 6.791083812327525, lng: 100.47511211534207 } }
             ];
 
             const newsData = [
                 { title: "ประกาศ:", content: "ปรับปรุงข้อมูลแนวสายไฟฟ้าล่าสุดเมื่อวันที่ 10 สิงหาคม 2567", link: "https://www.google.com" },
-                { title: "คำแนะนำ:", content: "กรุณาตรวจสอบพิกัดให้ถูกต้องก่อนออกเดินทาง", link: "https://www.google.com" },
-                { title: "ติดต่อผู้ดูแล:", content: "Safaree", link: "https://www.facebook.com/lib.egat" },
                 { title: "ข่าวประชาสัมพันธ์:", content: "ตรวจสอบการบำรุงรักษาสายส่งประจำปี", link: "https://www.google.com" },
                 { title: "ประกาศด่วน:", content: "แจ้งเตือนการหยุดจ่ายกระแสไฟฟ้าชั่วคราว", link: "https://www.google.com" },
                 { title: "ข้อมูลล่าสุด:", content: "เปิดเผยรายงานสถานการณ์ล่าสุด", link: "https://www.google.com" },
+                { title: "คำแนะนำ:", content: "กรุณาตรวจสอบพิกัดให้ถูกต้องก่อนออกเดินทาง", link: "https://www.google.com" },
                 { title: "คู่มือผู้ใช้:", content: "ดาวน์โหลดคู่มือการใช้งานแอปพลิเคชัน", link: "https://www.google.com" }
             ];
 
@@ -226,7 +230,7 @@
                         <div class="py-4 flex justify-between items-center">
                             <span class="text-lg font-medium text-gray-900">${item.unit}</span>
                             <div class="flex space-x-2">
-                                <button onclick="handleAddressClick(${item.address.lat}, ${item.address.lng})" class="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors">
+                                <button onclick="window.handleAddressClick(${item.address.lat}, ${item.address.lng})" class="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors">
                                     กดไปยังสถานที่ตั้ง
                                 </button>
                                 <a href="${item.mapUrl}" target="_blank" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
@@ -249,7 +253,7 @@
                         <p class="font-semibold text-gray-200 transition-colors duration-500">${item.title}</p>
                         <p>${item.content}</p>
                         <div class="flex justify-between items-center mt-2">
-                            <button onclick="summarizeNews('${item.link}')" class="inline-block px-4 py-2 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition-colors">
+                            <button onclick="window.summarizeNews('${item.link}')" class="inline-block px-4 py-2 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition-colors">
                                 ✨ สรุปข่าว
                             </button>
                             <a href="${item.link}" target="_blank" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
@@ -267,7 +271,7 @@
                     { name: "พัทลุง", url: "https://www.google.com/maps/d/embed?mid=1gz3hHP9gZ5bNvK04FBCYmRnp-QbHeM4I&ehbc=2E312F" },
                     { name: "หาดใหญ่1", url: "https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F" },
                     { name: "หาดใหญ่2", url: "https://www.google.com/maps/d/embed?mid=1QcJEt5MFkZHubZo4WBg_LRu53u58dICJ&ehbc=2E312F" },
-                    { name: "ยะลา", url: "https://www.google.com/maps/d/embed?mid=1o_npUEGkLpBvDJotq-Mj-b3Gjk1FhHbG&ehbc=2E312F" },
+                    { name: "ยะลา", url: "https://www.google.com/maps/d/embed?mid=1o_npUEGkLpBvDJotq-Mj-b3Gjk1hHbG&ehbc=2E312F" },
                     { name: "นราธิวาส", url: "https://www.google.com/maps/d/embed?mid=1768FPwu7Tv3ZKoFB8wM5Dbwzovp0BSAo&ehbc=2E312F" },
                     { name: "Tower 500KV", url: "https://www.google.com/maps/d/embed?mid=17Imm6bvu5AsQ7c_45qyxuVuxNNM8gt8&ehbc=2E312F" }
                 ];
