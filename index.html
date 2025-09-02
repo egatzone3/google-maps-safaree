@@ -87,6 +87,46 @@
     </div>
 
     <script>
+        // Function to handle fetching and summarizing news with Gemini API
+        const summarizeNews = async (url) => {
+            document.getElementById('summaryModal').classList.remove('hidden');
+            document.getElementById('summaryContent').innerHTML = '<p class="text-center">กำลังสร้างสรุปข้อมูล...</p>';
+
+            const systemPrompt = "Act as a professional news summarizer. Provide a concise, single-paragraph summary of the key findings from the article. The summary should be in Thai and be easy to understand.";
+            const userQuery = `Summarize the content of this article: ${url}`;
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            let response;
+            try {
+                response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    const text = candidate.content.parts[0].text;
+                    document.getElementById('summaryContent').innerHTML = `<p>${text}</p>`;
+                } else {
+                    document.getElementById('summaryContent').innerHTML = '<p class="text-red-400">ไม่สามารถสร้างสรุปข้อมูลได้ในขณะนี้ โปรดลองใหม่อีกครั้ง</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching summary:', error);
+                document.getElementById('summaryContent').innerHTML = '<p class="text-red-400">เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองใหม่อีกครั้ง</p>';
+            }
+        };
+
         // Function to handle address button click
         const handleAddressClick = (lat, lng) => {
             const mapLink = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
@@ -149,46 +189,6 @@
 
             let isDarkMode = true;
             
-            // Function to handle fetching and summarizing news with Gemini API
-            const summarizeNews = async (url) => {
-                summaryModal.classList.remove('hidden');
-                summaryContent.innerHTML = '<p class="text-center">กำลังสร้างสรุปข้อมูล...</p>';
-
-                const systemPrompt = "Act as a professional news summarizer. Provide a concise, single-paragraph summary of the key findings from the article. The summary should be in Thai and be easy to understand.";
-                const userQuery = `Summarize the content of this article: ${url}`;
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-                const payload = {
-                    contents: [{ parts: [{ text: userQuery }] }],
-                    tools: [{ "google_search": {} }],
-                    systemInstruction: {
-                        parts: [{ text: systemPrompt }]
-                    },
-                };
-
-                let response;
-                try {
-                    response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    const result = await response.json();
-                    const candidate = result.candidates?.[0];
-
-                    if (candidate && candidate.content?.parts?.[0]?.text) {
-                        const text = candidate.content.parts[0].text;
-                        summaryContent.innerHTML = `<p>${text}</p>`;
-                    } else {
-                        summaryContent.innerHTML = '<p class="text-red-400">ไม่สามารถสร้างสรุปข้อมูลได้ในขณะนี้ โปรดลองใหม่อีกครั้ง</p>';
-                    }
-                } catch (error) {
-                    console.error('Error fetching summary:', error);
-                    summaryContent.innerHTML = '<p class="text-red-400">เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองใหม่อีกครั้ง</p>';
-                }
-            };
-
             closeModalBtn.addEventListener('click', () => {
                 summaryModal.classList.add('hidden');
                 summaryContent.innerHTML = '';
