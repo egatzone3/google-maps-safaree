@@ -163,7 +163,7 @@
             infoModal.classList.remove('hidden');
         };
 
-        window.showDetails = (unit, lines, additionalDetails) => {
+        window.showDetails = (unit, responsibleLines, additionalDetails, personnel) => {
             const modalTitle = document.getElementById('modalTitle');
             const modalContent = document.getElementById('modalContent');
             const infoModal = document.getElementById('infoModal');
@@ -173,8 +173,8 @@
 
             // Render responsible lines table
             detailsHtml += '<p class="font-bold mb-2">แนวสายที่รับผิดชอบ:</p>';
-            detailsHtml += '<div class="overflow-x-auto"><table class="w-full text-sm text-left text-gray-400"><thead><tr><th class="py-2 px-4 border-b">แนวสาย</th><th class="py-2 px-4 border-b">ขนาดสาย</th><th class="py-2 px-4 border-b">ความยาว (Km)</th><th class="py-2 px-4 border-b">จำนวนเสา</th><th class="py-2 px-4 border-b">ขอบเขตรับผิดชอบ</th><th class="py-2 px-4 border-b">บสส.</th><th class="py-2 px-4 border-b">จำนวนลูกถ้วย/เฟส</th></tr></thead><tbody>';
-            lines.forEach(line => {
+            detailsHtml += '<div class="overflow-x-auto mb-6"><table class="w-full text-sm text-left text-gray-400"><thead><tr><th class="py-2 px-4 border-b">แนวสาย</th><th class="py-2 px-4 border-b">ขนาดสาย</th><th class="py-2 px-4 border-b">ความยาว (Km)</th><th class="py-2 px-4 border-b">จำนวนเสา</th><th class="py-2 px-4 border-b">ขอบเขตรับผิดชอบ</th><th class="py-2 px-4 border-b">บสส.</th><th class="py-2 px-4 border-b">จำนวนลูกถ้วย/เฟส</th></tr></thead><tbody>';
+            responsibleLines.forEach(line => {
                 detailsHtml += `<tr class="border-b border-gray-700">`;
                 detailsHtml += `<td class="py-2 px-4">${line.lineName}</td>`;
                 detailsHtml += `<td class="py-2 px-4">${line.cableSize}</td>`;
@@ -190,7 +190,7 @@
             // Render additional details table if they exist
             if (additionalDetails) {
                 detailsHtml += '<p class="font-bold mt-6 mb-2">ข้อมูลปัจจุบัน:</p>';
-                detailsHtml += '<div class="overflow-x-auto"><table class="w-full text-sm text-left text-gray-400"><thead><tr><th class="py-2 px-4 border-b">ข้อมูลปัจจุบัน</th><th class="py-2 px-4 border-b">จำนวน วงจร-กม.</th><th class="py-2 px-4 border-b">จำนวนบุคลากร</th><th class="py-2 px-4 border-b">วงจร-กม./คน</th><th class="py-2 px-4 border-b">รวม วงจร-กม. ใหม่</th><th class="py-2 px-4 border-b">วงจร-กม./คน ใหม่</th></tr></thead><tbody>';
+                detailsHtml += '<div class="overflow-x-auto mb-6"><table class="w-full text-sm text-left text-gray-400"><thead><tr><th class="py-2 px-4 border-b">ข้อมูลปัจจุบัน</th><th class="py-2 px-4 border-b">จำนวน วงจร-กม.</th><th class="py-2 px-4 border-b">จำนวนบุคลากร</th><th class="py-2 px-4 border-b">วงจร-กม./คน</th><th class="py-2 px-4 border-b">รวม วงจร-กม. ใหม่</th><th class="py-2 px-4 border-b">วงจร-กม./คน ใหม่</th></tr></thead><tbody>';
                 detailsHtml += `<tr class="border-b border-gray-700">`;
                 detailsHtml += `<td class="py-2 px-4">ข้อมูลปัจจุบัน</td>`;
                 detailsHtml += `<td class="py-2 px-4">${additionalDetails.circuitKmCount}</td>`;
@@ -202,6 +202,16 @@
                 detailsHtml += '</tbody></table></div>';
             }
             
+            // Render personnel list
+            if (personnel && personnel.length > 0) {
+                detailsHtml += '<p class="font-bold mt-6 mb-2">รายชื่อผู้ปฏิบัติงาน:</p>';
+                detailsHtml += '<ul class="list-disc list-inside space-y-1">';
+                personnel.forEach(p => {
+                    detailsHtml += `<li><strong>${p.role}:</strong> ${p.name}</li>`;
+                });
+                detailsHtml += '</ul>';
+            }
+
             modalContent.innerHTML = detailsHtml;
             infoModal.classList.remove('hidden');
         };
@@ -314,7 +324,13 @@
                         newCircuitKm: "188",
                         newTotalCircuitKm: "717.728",
                         newCircuitKmPerPerson: "179.432"
-                    }
+                    },
+                    personnel: [
+                        { role: "หัวหน้าหน่วย", name: "นายประหยัด อดออม" },
+                        { role: "ผู้ช่วยหน่วย", name: "นายขยัน หมั่นเพียร" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายตั้งใจ จริงจัง" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายพร้อม เพรียงกัน" }
+                    ]
                 },
                 {
                     unit: "หน่วย บสส.หาดใหญ่1", mapUrl: "https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F", darkColor: "bg-orange-600", lightColor: "bg-orange-200", address: { lat: 6.995626682895144, lng: 100.43369286184985 }, emergencyContact: { phone: "082-234-5678", line: "hy1-unit" },
@@ -336,7 +352,13 @@
                         newCircuitKm: "330.95",
                         newTotalCircuitKm: "788.141",
                         newCircuitKmPerPerson: "98.517625"
-                    }
+                    },
+                    personnel: [
+                        { role: "หัวหน้าหน่วย", name: "นายสมชาย ใจดี" },
+                        { role: "ผู้ช่วยหน่วย", name: "นางสาวอรุณ สุขสบาย" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายมนตรี มีชัย" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายสมศักดิ์ ขยันงาน" }
+                    ]
                 },
                 {
                     unit: "หน่วย บสส.หาดใหญ่2", mapUrl: "https://www.google.com/maps/d/embed?mid=1QcJEt5MFkZHubZo4WBg_LRu53u58dICJ&ehbc=2E312F", darkColor: "bg-yellow-500", lightColor: "bg-yellow-200", address: { lat: 6.995626682895144, lng: 100.43369286184985 }, emergencyContact: { phone: "083-345-6789", line: "hy2-unit" },
@@ -355,7 +377,13 @@
                         newCircuitKm: "26.622",
                         newTotalCircuitKm: "484.314",
                         newCircuitKmPerPerson: "121.0785"
-                    }
+                    },
+                    personnel: [
+                        { role: "หัวหน้าหน่วย", name: "นางสาวศิริพร สุวรรณ" },
+                        { role: "ผู้ช่วยหน่วย", name: "นายธนพล มีสุข" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายประเสริฐ ตั้งมั่น" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายสมชาติ สมจริง" }
+                    ]
                 },
                 {
                     unit: "หน่วย บสส.ยะลา", mapUrl: "https://www.google.com/maps/d/embed?mid=1o_npUEGkLpBvDJotq-Mj-b3Gjk1FhHbG&ehbc=2E312F", darkColor: "bg-blue-600", lightColor: "bg-blue-200", address: { lat: 6.499050426111315, lng: 101.26783926671483 }, emergencyContact: { phone: "084-456-7890", line: "yl-unit" },
@@ -368,7 +396,13 @@
                         {lineName: "115 kV YL2-SUK", cableSize: "ดูตาม YL2-NW และ NW-SUK", length: "-", towers: "-", responsibleArea: "-", responsibleUnit: "YL", insulators: "-"},
                         {lineName: "115 kV YL1-YL2", cableSize: "2x795 MCM ACSR", length: "2.679", towers: "12", responsibleArea: "123/2A-125/4A", responsibleUnit: "YL", insulators: "-/-"}
                     ],
-                    additionalDetails: null
+                    additionalDetails: null,
+                    personnel: [
+                        { role: "หัวหน้าหน่วย", name: "นายกิติชัย สุขสันต์" },
+                        { role: "ผู้ช่วยหน่วย", name: "นายวิทวัส สว่าง" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายธนากร มีทรัพย์" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายวรวุฒิ นำชัย" }
+                    ]
                 },
                 {
                     unit: "หน่วย บสส.นราธิวาส", mapUrl: "https://www.google.com/maps/d/embed?mid=1768FPwu7Tv3ZKoFB8wM5Dbwzovp0BSAo&ehbc=2E312F", darkColor: "bg-gray-200", lightColor: "bg-white", address: { lat: 6.421060608745661, lng: 101.7894713541421 }, emergencyContact: { phone: "085-567-8901", line: "nw-unit" },
@@ -377,7 +411,13 @@
                         {lineName: "115 kV NW-SUK", cableSize: "477 MCM ACSR", length: "50.128", towers: "157", responsibleArea: "0/1-50/1", responsibleUnit: "NW", insulators: "8/-, 9/-"},
                         {lineName: "115 kV YL2-NW", cableSize: "795 MCM ACSR", length: "77.58", towers: "258", responsibleArea: "32/2-77/2, 45.187", responsibleUnit: "NW", insulators: "-/-"}
                     ],
-                    additionalDetails: null
+                    additionalDetails: null,
+                    personnel: [
+                        { role: "หัวหน้าหน่วย", name: "นางสาวศิริพร สุวรรณ" },
+                        { role: "ผู้ช่วยหน่วย", name: "นายธนพล มีสุข" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายประเสริฐ ตั้งมั่น" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายสมชาติ สมจริง" }
+                    ]
                 },
                 {
                     unit: "Tower 500KV", mapUrl: "https://www.google.com/maps/d/embed?mid=17Imm6bvu5AsQ7c_45qyxuVuxNNM8gt8&ehbc=2E312F", darkColor: "bg-teal-600", lightColor: "bg-teal-200", address: { lat: 6.791083812327525, lng: 100.47511211534207 }, emergencyContact: { phone: "086-678-9012", line: "tower-500kv" },
@@ -391,7 +431,13 @@
                         {lineName: "230 kV KNE-TS", cableSize: "2x1272 MCM ACSR", length: "205.291", towers: "525", responsibleArea: "0/1-63/2, 62.72", responsibleUnit: "HY1-2", insulators: "16/14, 17/15"},
                         {lineName: "132 kV SDO-CPNG", cableSize: "477 MCM ACSR", length: "8.705", towers: "41", responsibleArea: "1-41", responsibleUnit: "HY1-1", insulators: "11/-, 12/-"}
                     ],
-                    additionalDetails: null
+                    additionalDetails: null,
+                    personnel: [
+                        { role: "หัวหน้าหน่วย", name: "นายประหยัด อดออม" },
+                        { role: "ผู้ช่วยหน่วย", name: "นายขยัน หมั่นเพียร" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายตั้งใจ จริงจัง" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายพร้อม เพรียงกัน" }
+                    ]
                 }
             ];
 
@@ -461,7 +507,7 @@
                                 <button data-lat="${item.address.lat}" data-lng="${item.address.lng}" class="address-btn px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors">
                                     กดไปยังสถานที่ตั้ง
                                 </button>
-                                <button data-unit="${item.unit}" data-lines='${JSON.stringify(item.responsibleLines)}' data-additional-details='${item.additionalDetails ? JSON.stringify(item.additionalDetails) : null}' class="details-btn px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors">
+                                <button data-unit="${item.unit}" data-lines='${JSON.stringify(item.responsibleLines)}' data-additional-details='${item.additionalDetails ? JSON.stringify(item.additionalDetails) : null}' data-personnel='${item.personnel ? JSON.stringify(item.personnel) : null}' class="details-btn px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors">
                                     ดูรายละเอียด
                                 </button>
                                 <a href="${item.mapUrl}" target="_blank" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
@@ -565,6 +611,16 @@
                         line.cableSize.toLowerCase().includes(searchTerm) ||
                         line.responsibleArea.toLowerCase().includes(searchTerm) ||
                         line.responsibleUnit.toLowerCase().includes(searchTerm)
+                    ) ||
+                    (item.additionalDetails && 
+                        Object.values(item.additionalDetails).some(value => 
+                            String(value).toLowerCase().includes(searchTerm)
+                        )
+                    ) ||
+                    (item.personnel && 
+                        item.personnel.some(p => 
+                            p.name.toLowerCase().includes(searchTerm) || p.role.toLowerCase().includes(searchTerm)
+                        )
                     )
                 );
                 renderList(filteredData);
@@ -589,8 +645,8 @@
                     window.showContactInfo(unit, phone, line);
                 } else if (e.target.classList.contains('details-btn')) {
                     const unit = e.target.dataset.unit;
-                    const lines = JSON.parse(decodeURIComponent(e.target.dataset.lines));
-                    window.showDetails(unit, lines);
+                    const item = data.find(d => d.unit === unit);
+                    window.showDetails(item.unit, item.responsibleLines, item.additionalDetails, item.personnel);
                 }
             });
 
