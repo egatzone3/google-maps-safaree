@@ -40,6 +40,11 @@
             </svg>
         </div>
 
+        <!-- Filter Buttons -->
+        <div id="filterButtons" class="mb-6 flex flex-wrap justify-center gap-2">
+            <!-- Filter buttons will be populated by JavaScript -->
+        </div>
+
         <!-- Main Content (Categories & Links) -->
         <main id="mainContent" class="space-y-6">
             <!-- Data will be populated here by JavaScript -->
@@ -90,19 +95,23 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             // Register the Service Worker for PWA functionality
-            try {
-                if ('serviceWorker' in navigator) {
-                    const swUrl = new URL('./service-worker.js', window.location.href);
-                    navigator.serviceWorker.register(swUrl)
-                        .then(registration => {
-                            console.log('Service Worker registered with scope:', registration.scope);
-                        })
-                        .catch(err => {
-                            console.error('Service Worker registration failed:', err);
-                        });
+            if (window.location.protocol.startsWith('http')) {
+                try {
+                    if ('serviceWorker' in navigator) {
+                        const swUrl = new URL('./service-worker.js', window.location.href);
+                        navigator.serviceWorker.register(swUrl)
+                            .then(registration => {
+                                console.log('Service Worker registered with scope:', registration.scope);
+                            })
+                            .catch(err => {
+                                console.error('Service Worker registration failed:', err);
+                            });
+                    }
+                } catch (error) {
+                    console.error('Service Worker registration failed (try/catch):', error);
                 }
-            } catch (error) {
-                console.error('Service Worker registration failed (try/catch):', error);
+            } else {
+                console.log('Service Worker not registered due to unsupported protocol.');
             }
 
             const data = [
@@ -136,6 +145,7 @@
             const summaryModal = document.getElementById('summaryModal');
             const summaryContent = document.getElementById('summaryContent');
             const closeModalBtn = document.getElementById('closeModalBtn');
+            const filterButtonsContainer = document.getElementById('filterButtons');
 
             let isDarkMode = true;
             
@@ -203,6 +213,10 @@
             // Function to render the main list
             const renderList = (filteredData) => {
                 mainContent.innerHTML = '';
+                if (filteredData.length === 0) {
+                    mainContent.innerHTML = `<p class="text-center text-gray-400 mt-10">ไม่พบข้อมูลที่ตรงกับการค้นหา</p>`;
+                    return;
+                }
                 filteredData.forEach(item => {
                     const bgColorClass = isDarkMode ? item.darkColor : item.lightColor;
                     
@@ -274,9 +288,36 @@
                 });
             };
 
+            // Function to create filter buttons
+            const renderFilterButtons = () => {
+                const units = [...new Set(data.map(item => item.unit))];
+                filterButtonsContainer.innerHTML = '';
+                
+                // Add "All" button
+                const allButton = document.createElement('button');
+                allButton.textContent = 'ทั้งหมด';
+                allButton.className = 'px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors';
+                allButton.addEventListener('click', () => {
+                    renderList(data);
+                });
+                filterButtonsContainer.appendChild(allButton);
+
+                units.forEach(unit => {
+                    const button = document.createElement('button');
+                    button.textContent = unit;
+                    button.className = 'px-4 py-2 bg-gray-700 text-white rounded-full hover:bg-gray-600 transition-colors';
+                    button.addEventListener('click', () => {
+                        const filteredData = data.filter(item => item.unit === unit);
+                        renderList(filteredData);
+                    });
+                    filterButtonsContainer.appendChild(button);
+                });
+            };
+
             // Initial render
             applyTheme();
             renderMapButtons();
+            renderFilterButtons();
 
             // Search functionality
             searchInput.addEventListener('input', (e) => {
