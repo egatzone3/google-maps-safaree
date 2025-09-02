@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แผนที่นำทาง GoogleMap-By.SAFAREE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 transition-colors duration-500">
+
+    <div class="max-w-4xl mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-10 flex justify-between items-center">
+            <div class="flex-grow">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-blue-400 tracking-tight transition-colors duration-500">แผนที่นำทาง</h1>
+                <h2 class="text-xl md:text-2xl font-semibold text-gray-300 mt-2 transition-colors duration-500">GoogleMap-By.SAFAREE</h2>
+            </div>
+            
+            <!-- Theme Toggle Button -->
+            <button id="themeToggle" class="p-3 rounded-full bg-gray-800 text-yellow-400 shadow-lg hover:scale-110 transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" id="sun-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" id="moon-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="mb-10 relative">
+            <input type="text" id="searchInput" placeholder="ค้นหาข้อมูล..." class="w-full px-5 py-4 pl-12 bg-gray-800 text-gray-100 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6 transition-colors duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+        </div>
+
+        <!-- Main Content (Categories & Links) -->
+        <main id="mainContent" class="space-y-6">
+            <!-- Data will be populated here by JavaScript -->
+        </main>
+        
+        <!-- Embedded Map Section -->
+        <section class="mt-12 bg-gray-800 rounded-xl shadow-2xl p-6 transition-colors duration-500">
+            <h3 class="text-2xl font-bold text-gray-100 mb-4 transition-colors duration-500">แผนที่รวม</h3>
+            
+            <div id="mapButtons" class="mb-4 flex flex-wrap justify-center gap-2">
+                <!-- Map buttons will be populated here by JavaScript -->
+            </div>
+            
+            <div class="relative w-full overflow-hidden rounded-lg shadow-inner" style="padding-top: 75%;">
+                <iframe id="combinedMap" src="https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F" title="แผนที่นำทาง" class="absolute top-0 left-0 w-full h-full" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section class="mt-12 bg-gray-800 rounded-xl shadow-2xl p-6 transition-colors duration-500">
+            <h3 class="text-2xl font-bold text-gray-100 mb-4 transition-colors duration-500">กระดานข่าว</h3>
+            <div id="newsContent" class="space-y-4 text-gray-300">
+                <!-- News items will be populated here by JavaScript -->
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Function to handle address button click
+        const handleAddressClick = (lat, lng) => {
+            const mapLink = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+            window.open(mapLink, '_blank');
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = [
+                { unit: "หน่วย บสส.พัทลุง", mapUrl: "https://www.google.com/maps/d/embed?mid=1gz3hHP9gZ5bNvK04FBCYmRnp-QbHeM4I&ehbc=2E312F", darkColor: "bg-red-600", lightColor: "bg-red-200", address: { lat: 7.600682400046107, lng: 100.02821618589384 } },
+                { unit: "หน่วย บสส.หาดใหญ่1", mapUrl: "https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F", darkColor: "bg-orange-600", lightColor: "bg-orange-200", address: { lat: 6.995626682895144, lng: 100.43369286184985 } },
+                { unit: "หน่วย บสส.หาดใหญ่2", mapUrl: "https://www.google.com/maps/d/embed?mid=1QcJEt5MFkZHubZo4WBg_LRu53u58dICJ&ehbc=2E312F", darkColor: "bg-yellow-500", lightColor: "bg-yellow-200", address: { lat: 6.995626682895144, lng: 100.43369286184985 } },
+                { unit: "หน่วย บสส.ยะลา", mapUrl: "https://www.google.com/maps/d/embed?mid=1o_npUEGkLpBvDJotq-Mj-b3Gjk1FhHbG&ehbc=2E312F", darkColor: "bg-blue-600", lightColor: "bg-blue-200", address: { lat: 6.499050426111315, lng: 101.26783926671483 } },
+                { unit: "หน่วย บสส.นราธิวาส", mapUrl: "https://www.google.com/maps/d/embed?mid=1768FPwu7Tv3ZKoFB8wM5Dbwzovp0BSAo&ehbc=2E312F", darkColor: "bg-gray-200", lightColor: "bg-white", address: { lat: 6.421060608745661, lng: 101.7894713541421 } },
+                { unit: "Tower 500KV", mapUrl: "https://www.google.com/maps/d/embed?mid=17Imm6bvu5AsQ7c_45qyxuVuxNNM8gt8&ehbc=2E312F", darkColor: "bg-teal-600", lightColor: "bg-teal-200", address: { lat: 6.791083812327525, lng: 100.47511211534207 } }
+            ];
+
+            const newsData = [
+                { title: "ประกาศ:", content: "ปรับปรุงข้อมูลแนวสายไฟฟ้าล่าสุดเมื่อวันที่ 10 สิงหาคม 2567", link: "https://www.google.com" },
+                { title: "คำแนะนำ:", content: "กรุณาตรวจสอบพิกัดให้ถูกต้องก่อนออกเดินทาง", link: "https://www.google.com" },
+                { title: "ติดต่อผู้ดูแล:", content: "Safaree", link: "https://www.facebook.com/lib.egat" },
+                { title: "ข่าวประชาสัมพันธ์:", content: "ตรวจสอบการบำรุงรักษาสายส่งประจำปี", link: "https://www.google.com" },
+                { title: "ประกาศด่วน:", content: "แจ้งเตือนการหยุดจ่ายกระแสไฟฟ้าชั่วคราว", link: "https://www.google.com" },
+                { title: "ข้อมูลล่าสุด:", content: "เปิดเผยรายงานสถานการณ์ล่าสุด", link: "https://www.google.com" },
+                { title: "คู่มือผู้ใช้:", content: "ดาวน์โหลดคู่มือการใช้งานแอปพลิเคชัน", link: "https://www.google.com" }
+            ];
+
+            const mainContent = document.getElementById('mainContent');
+            const searchInput = document.getElementById('searchInput');
+            const themeToggle = document.getElementById('themeToggle');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            const body = document.body;
+            const newsContent = document.getElementById('newsContent');
+            const mapButtonsContainer = document.getElementById('mapButtons');
+            const combinedMapIframe = document.getElementById('combinedMap');
+
+            let isDarkMode = true;
+            
+            const applyTheme = () => {
+                const color = isDarkMode ? 'gray-900' : 'gray-100';
+                const text = isDarkMode ? 'gray-100' : 'gray-800';
+                body.className = `bg-${color} text-${text} transition-colors duration-500`;
+
+                if (isDarkMode) {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                } else {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                }
+                renderList(data);
+                renderNews(newsData);
+            };
+
+            // Function to render the main list
+            const renderList = (filteredData) => {
+                mainContent.innerHTML = '';
+                filteredData.forEach(item => {
+                    const bgColorClass = isDarkMode ? item.darkColor : item.lightColor;
+                    
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = `rounded-xl shadow-lg p-6 mb-6 ${bgColorClass} transition-colors duration-500`;
+                    itemDiv.innerHTML = `
+                        <div class="py-4 flex justify-between items-center">
+                            <span class="text-lg font-medium text-gray-900">${item.unit}</span>
+                            <div class="flex space-x-2">
+                                <button onclick="handleAddressClick(${item.address.lat}, ${item.address.lng})" class="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors">
+                                    กดไปยังสถานที่ตั้ง
+                                </button>
+                                <a href="${item.mapUrl}" target="_blank" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                    ไปยังแผนที่แนวสาย
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    mainContent.appendChild(itemDiv);
+                });
+            };
+
+            // Function to render the news section
+            const renderNews = (newsItems) => {
+                newsContent.innerHTML = '';
+                newsItems.forEach(item => {
+                    const newsItemDiv = document.createElement('div');
+                    newsItemDiv.className = `p-4 rounded-lg shadow-inner transition-colors duration-500 text-left ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`;
+                    newsItemDiv.innerHTML = `
+                        <p class="font-semibold text-gray-200 transition-colors duration-500">${item.title}</p>
+                        <p>${item.content}</p>
+                        <a href="${item.link}" target="_blank" class="mt-2 inline-block px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                            ดูเพิ่มเติม
+                        </a>
+                    `;
+                    newsContent.appendChild(newsItemDiv);
+                });
+            };
+
+            // Function to create map selection buttons
+            const renderMapButtons = () => {
+                const mapLinks = [
+                    { name: "พัทลุง", url: "https://www.google.com/maps/d/embed?mid=1gz3hHP9gZ5bNvK04FBCYmRnp-QbHeM4I&ehbc=2E312F" },
+                    { name: "หาดใหญ่1", url: "https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F" },
+                    { name: "หาดใหญ่2", url: "https://www.google.com/maps/d/embed?mid=1QcJEt5MFkZHubZo4WBg_LRu53u58dICJ&ehbc=2E312F" },
+                    { name: "ยะลา", url: "https://www.google.com/maps/d/embed?mid=1o_npUEGkLpBvDJotq-Mj-b3Gjk1FhHbG&ehbc=2E312F" },
+                    { name: "นราธิวาส", url: "https://www.google.com/maps/d/embed?mid=1768FPwu7Tv3ZKoFB8wM5Dbwzovp0BSAo&ehbc=2E312F" },
+                    { name: "Tower 500KV", url: "https://www.google.com/maps/d/embed?mid=17Imm6bvu5AsQ7c_45qyxuVuxNNM8gt8&ehbc=2E312F" }
+                ];
+
+                mapButtonsContainer.innerHTML = '';
+                mapLinks.forEach(map => {
+                    const button = document.createElement('button');
+                    button.textContent = map.name;
+                    button.dataset.url = map.url;
+                    button.className = 'px-4 py-2 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors';
+                    mapButtonsContainer.appendChild(button);
+                });
+
+                mapButtonsContainer.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'BUTTON' && e.target.dataset.url) {
+                        combinedMapIframe.src = e.target.dataset.url;
+                    }
+                });
+            };
+
+            // Initial render
+            applyTheme();
+            renderMapButtons();
+
+            // Search functionality
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filteredData = data.filter(item => 
+                    item.unit.toLowerCase().includes(searchTerm)
+                );
+                renderList(filteredData);
+            });
+            
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', () => {
+                isDarkMode = !isDarkMode;
+                applyTheme();
+            });
+        });
+    </script>
+</body>
+</html>
