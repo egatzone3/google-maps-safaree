@@ -90,8 +90,8 @@
         
         <!-- Modal for AI Summary & Contact Info -->
         <div id="infoModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
-            <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-2xl">
-                <div class="flex justify-between items-center mb-4">
+            <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-2xl overflow-y-auto max-h-[90vh]">
+                <div class="flex justify-between items-center mb-4 sticky top-0 bg-gray-800">
                     <h4 id="modalTitle" class="text-xl font-bold text-gray-100"></h4>
                     <button id="closeModalBtn" class="text-gray-400 hover:text-gray-100">&times;</button>
                 </div>
@@ -638,6 +638,10 @@
                     const lat = e.target.dataset.lat;
                     const lng = e.target.dataset.lng;
                     window.handleAddressClick(lat, lng);
+                } else if (e.target.classList.contains('get-directions-btn')) {
+                    const lat = e.target.dataset.lat;
+                    const lng = e.target.dataset.lng;
+                    window.getDirectionsFromHere(lat, lng);
                 } else if (e.target.classList.contains('contact-btn')) {
                     const unit = e.target.dataset.unit;
                     const phone = e.target.dataset.phone;
