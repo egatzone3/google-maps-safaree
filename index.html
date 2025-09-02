@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แผนที่นำทาง GoogleMap-By.SAFAREE</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="manifest" href="/manifest.json">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -75,13 +76,14 @@
         };
         
         document.addEventListener('DOMContentLoaded', () => {
+
             const data = [
                 { unit: "หน่วย บสส.พัทลุง", mapUrl: "https://www.google.com/maps/d/embed?mid=1gz3hHP9gZ5bNvK04FBCYmRnp-QbHeM4I&ehbc=2E312F", darkColor: "bg-red-600", lightColor: "bg-red-200", address: { lat: 7.600682400046107, lng: 100.02821618589384 } },
                 { unit: "หน่วย บสส.หาดใหญ่1", mapUrl: "https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F", darkColor: "bg-orange-600", lightColor: "bg-orange-200", address: { lat: 6.995626682895144, lng: 100.43369286184985 } },
                 { unit: "หน่วย บสส.หาดใหญ่2", mapUrl: "https://www.google.com/maps/d/embed?mid=1QcJEt5MFkZHubZo4WBg_LRu53u58dICJ&ehbc=2E312F", darkColor: "bg-yellow-500", lightColor: "bg-yellow-200", address: { lat: 6.995626682895144, lng: 100.43369286184985 } },
                 { unit: "หน่วย บสส.ยะลา", mapUrl: "https://www.google.com/maps/d/embed?mid=1o_npUEGkLpBvDJotq-Mj-b3Gjk1FhHbG&ehbc=2E312F", darkColor: "bg-blue-600", lightColor: "bg-blue-200", address: { lat: 6.499050426111315, lng: 101.26783926671483 } },
                 { unit: "หน่วย บสส.นราธิวาส", mapUrl: "https://www.google.com/maps/d/embed?mid=1768FPwu7Tv3ZKoFB8wM5Dbwzovp0BSAo&ehbc=2E312F", darkColor: "bg-gray-200", lightColor: "bg-white", address: { lat: 6.421060608745661, lng: 101.7894713541421 } },
-                { unit: "Tower 500KV", mapUrl: "https://www.google.com/maps/d/embed?mid=17Imm6bvu5AsQ7c_45qyxuVuxNNM8gt8&ehbc=2E312F", darkColor: "bg-teal-600", lightColor: "bg-teal-200", address: { lat: 6.791083812327525, lng: 100.47511211534207 } }
+                { unit: "Tower 500KV", mapUrl: "https://www.google.com/maps/d/embed?mid=17Imm6bvu5AsQ7c_45qyxuVuxNNM8gt8&ehbc=2E312F", darkColor: "bg-teal-600", lightColor: "bg-teal-200", address: { lat: 7.00, lng: 100.00 } }
             ];
 
             const newsData = [
@@ -135,10 +137,10 @@
                             <span class="text-lg font-medium text-gray-900">${item.unit}</span>
                             <div class="flex space-x-2">
                                 <button onclick="handleAddressClick(${item.address.lat}, ${item.address.lng})" class="px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors">
-                                    กดไปยังสถานที่ตั้ง
+                                    ไปยังแผนที่ (ที่อยู่)
                                 </button>
                                 <a href="${item.mapUrl}" target="_blank" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                    ไปยังแผนที่แนวสาย
+                                    ไปยังแผนที่
                                 </a>
                             </div>
                         </div>
