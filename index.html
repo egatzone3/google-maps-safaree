@@ -255,7 +255,7 @@
             
             // Render additional details table if they exist
             if (additionalDetails) {
-                detailsHtml += '<p class="font-bold mt-6 mb-2">ข้อมูลปัจจุบัน:</p>';
+                detailsHtml += '<p class="font-bold mt-6 mb-2">ข้อมูลเพิ่มเติม:</p>';
                 detailsHtml += '<div class="overflow-x-auto mb-6"><table class="w-full text-sm text-left text-gray-400"><thead><tr><th class="py-2 px-4 border-b">ข้อมูลปัจจุบัน</th><th class="py-2 px-4 border-b">จำนวน วงจร-กม.</th><th class="py-2 px-4 border-b">จำนวนบุคลากร</th><th class="py-2 px-4 border-b">วงจร-กม./คน</th><th class="py-2 px-4 border-b">รวม วงจร-กม. ใหม่</th><th class="py-2 px-4 border-b">วงจร-กม./คน ใหม่</th></tr></thead><tbody>';
                 detailsHtml += `<tr class="border-b border-gray-700">`;
                 detailsHtml += `<td class="py-2 px-4">ข้อมูลปัจจุบัน</td>`;
@@ -308,7 +308,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Firebase configuration for Egat3 project
             const firebaseConfig = {
-                apiKey: "AIzaSyClA6z9X5ZtcCeQAbEQx-iTwZq0LMAVyFk",
+                apiKey: "YOUR_API_KEY",
                 authDomain: "egat3-d8b13.firebaseapp.com",
                 projectId: "egat3-d8b13",
                 storageBucket: "egat3-d8b13.appspot.com",
@@ -853,4 +853,3 @@
     </script>
 </body>
 </html>
-
