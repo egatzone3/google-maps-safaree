@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แผนที่นำทางสายแรงสูง-MapEgat-By.SAFAREE</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="manifest" href="./manifest.json">
@@ -30,6 +31,14 @@
                     <h3 class="font-bold text-blue-400 transition-colors duration-500">ผู้เข้าใช้งาน</h3>
                     <p id="visitorCounter" class="text-xl font-extrabold text-green-400">0</p>
                 </div>
+
+                <!-- Admin Login/Manage Button -->
+                <button id="adminLoginBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
+                    ผู้ดูแล
+                </button>
+                <button id="manageNewsBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md hidden transition-colors">
+                    จัดการข่าว
+                </button>
 
                 <!-- Theme Toggle Button -->
                 <button id="themeToggle" class="p-3 rounded-full bg-gray-800 text-yellow-400 shadow-lg hover:scale-110 transition-transform">
@@ -84,7 +93,7 @@
         
         <!-- About Section -->
         <section class="mt-12 text-center text-gray-400 text-sm">
-            <p>&copy; 2025 แผนที่นำทาง GoogleMap-By.SAFAREE</p>
+            <p>&copy; 2025 แผนที่นำทางสายส่งแรงสูง</p>
             <p>ผู้ดูแลเว็บไซต์: Safaree Labaisor (<a href="https://www.facebook.com/lib.egat" target="_blank" class="text-blue-400 hover:underline">Facebook</a>, <a href="tel:0845071339" class="text-blue-400 hover:underline">โทร.0845071339</a>, <a href="https://line.me/ti/p/DUtMF21PbA" target="_blank" class="text-blue-400 hover:underline">Line</a>)</p>
         </section>
         
@@ -98,6 +107,63 @@
                 <div id="modalContent" class="text-gray-300 text-left">
                     <p>กำลังโหลดข้อมูล...</p>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Admin Modal for News Management -->
+        <div id="adminModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
+            <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-2xl overflow-y-auto max-h-[90vh]">
+                <div class="flex justify-between items-center mb-4 sticky top-0 bg-gray-800">
+                    <h4 class="text-xl font-bold text-gray-100">จัดการข่าวสาร</h4>
+                    <button id="closeAdminModalBtn" class="text-gray-400 hover:text-gray-100">&times;</button>
+                </div>
+                <div id="adminContent">
+                    <form id="newsForm" class="space-y-4">
+                        <input type="hidden" id="newsId">
+                        <div>
+                            <label for="newsTitle" class="block text-sm font-medium text-gray-400">หัวข้อข่าว</label>
+                            <input type="text" id="newsTitle" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="newsText" class="block text-sm font-medium text-gray-400">เนื้อหา</label>
+                            <textarea id="newsText" rows="3" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                        </div>
+                        <div>
+                            <label for="newsLink" class="block text-sm font-medium text-gray-400">ลิงก์</label>
+                            <input type="url" id="newsLink" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="flex justify-end space-x-2">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">บันทึก</button>
+                            <button type="button" id="cancelEditBtn" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">ยกเลิก</button>
+                        </div>
+                    </form>
+                    <div id="newsList" class="mt-8 space-y-4">
+                        <!-- News items for admin will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
+            <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-1/2 max-w-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-xl font-bold text-gray-100">ล็อกอินผู้ดูแล</h4>
+                    <button id="closeLoginModalBtn" class="text-gray-400 hover:text-gray-100">&times;</button>
+                </div>
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="loginEmail" class="block text-sm font-medium text-gray-400">อีเมล</label>
+                        <input type="email" id="loginEmail" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="loginPassword" class="block text-sm font-medium text-gray-400">รหัสผ่าน</label>
+                        <input type="password" id="loginPassword" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">เข้าสู่ระบบ</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -253,6 +319,7 @@
             // Initialize Firebase
             firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
+            const auth = firebase.auth();
 
             // Function to handle visitor count
             const visitorCounter = document.getElementById('visitorCounter');
@@ -435,12 +502,12 @@
             ];
 
             const newsData = [
-                { title: "ประกาศ:", content: "ปรับปรุงข้อมูลแนวสายไฟฟ้าล่าสุดเมื่อวันที่ 10 สิงหาคม 2567", link: "https://www.google.com" },
-                { title: "ข่าวประชาสัมพันธ์:", content: "ประกาศรับสมัครงาน", link: "https://www.egat.co.th/home/recruitment/" },
-                { title: "ประกาศด่วน:", content: "แจ้งเตือนการหยุดจ่ายกระแสไฟฟ้าชั่วคราว", link: "https://www.google.com" },
-                { title: "ข้อมูลล่าสุด:", content: "เปิดเผยรายงานสถานการณ์ล่าสุด", link: "https://www.google.com" },
-                { title: "คำแนะนำ:", content: "กรุณาตรวจสอบพิกัดให้ถูกต้องก่อนออกเดินทาง", link: "https://www.google.com" },
-                { title: "คู่มือผู้ใช้:", content: "ดาวน์โหลดคู่มือการใช้งานแอปพลิเคชัน", link: "https://docs.google.com/document/u/0/d/1-2lWp06eBv7PssiHLC_Yhw1Bj_Qq0Z1I-S1yI_axCr8/" }
+                { id: "news1", title: "ประกาศ:", content: "ปรับปรุงข้อมูลแนวสายไฟฟ้าล่าสุดเมื่อวันที่ 10 สิงหาคม 2567", link: "https://www.google.com" },
+                { id: "news2", title: "ข่าวประชาสัมพันธ์:", content: "ประกาศรับสมัครงาน", link: "https://www.egat.co.th/home/recruitment/" },
+                { id: "news3", title: "ประกาศด่วน:", content: "แจ้งเตือนการหยุดจ่ายกระแสไฟฟ้าชั่วคราว", link: "https://www.google.com" },
+                { id: "news4", title: "ข้อมูลล่าสุด:", content: "เปิดเผยรายงานสถานการณ์ล่าสุด", link: "https://www.google.com" },
+                { id: "news5", title: "คำแนะนำ:", content: "กรุณาตรวจสอบพิกัดให้ถูกต้องก่อนออกเดินทาง", link: "https://www.google.com" },
+                { id: "news6", title: "คู่มือผู้ใช้:", content: "ดาวน์โหลดคู่มือการใช้งานแอปพลิเคชัน", link: "https://docs.google.com/document/u/0/d/1-2lWp06eBv7PssiHLC_Yhw1Bj_Qq0Z1I-S1yI_axCr8/" }
             ];
 
             const mainContent = document.getElementById('mainContent');
@@ -457,12 +524,53 @@
             const modalContent = document.getElementById('modalContent');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const filterButtonsContainer = document.getElementById('filterButtons');
+            const manageNewsBtn = document.getElementById('manageNewsBtn');
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+            const adminModal = document.getElementById('adminModal');
+            const closeAdminModalBtn = document.getElementById('closeAdminModalBtn');
+            const newsListContainer = document.getElementById('newsList');
+            const newsForm = document.getElementById('newsForm');
+            const newsIdInput = document.getElementById('newsId');
+            const newsTitleInput = document.getElementById('newsTitle');
+            const newsTextInput = document.getElementById('newsText');
+            const newsLinkInput = document.getElementById('newsLink');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+            const loginModal = document.getElementById('loginModal');
+            const loginForm = document.getElementById('loginForm');
+            const loginEmailInput = document.getElementById('loginEmail');
+            const loginPasswordInput = document.getElementById('loginPassword');
+            const closeLoginModalBtn = document.getElementById('closeLoginModalBtn');
 
             let isDarkMode = true;
+
+            const handleLogin = async (e) => {
+                e.preventDefault();
+                const email = loginEmailInput.value;
+                const password = loginPasswordInput.value;
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    loginModal.classList.add('hidden');
+                } catch (error) {
+                    alert('ล็อกอินไม่สำเร็จ');
+                    console.error('Login error:', error);
+                }
+            };
             
             closeModalBtn.addEventListener('click', () => {
                 infoModal.classList.add('hidden');
                 modalContent.innerHTML = '';
+            });
+
+            closeAdminModalBtn.addEventListener('click', () => {
+                adminModal.classList.add('hidden');
+            });
+            
+            closeLoginModalBtn.addEventListener('click', () => {
+                loginModal.classList.add('hidden');
+            });
+
+            adminLoginBtn.addEventListener('click', () => {
+                loginModal.classList.remove('hidden');
             });
 
             const applyTheme = () => {
@@ -481,7 +589,6 @@
                 renderNews(newsData);
             };
 
-            // Function to render the main list
             const renderList = (filteredData) => {
                 mainContent.innerHTML = '';
                 if (filteredData.length === 0) {
@@ -514,9 +621,12 @@
             };
             
 
-            // Function to render the news section
             const renderNews = (newsItems) => {
                 newsContent.innerHTML = '';
+                if (newsItems.length === 0) {
+                    newsContent.innerHTML = `<p class="text-center text-gray-400 mt-4">ไม่มีข่าวสารในขณะนี้</p>`;
+                    return;
+                }
                 newsItems.forEach(item => {
                     const newsItemDiv = document.createElement('div');
                     newsItemDiv.className = `p-4 rounded-lg shadow-inner transition-colors duration-500 text-left ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`;
@@ -536,7 +646,81 @@
                 });
             };
 
-            // Function to create map selection buttons
+            const renderAdminNewsList = (newsItems) => {
+                newsListContainer.innerHTML = '';
+                newsItems.forEach(item => {
+                    const newsItemDiv = document.createElement('div');
+                    newsItemDiv.className = `p-4 rounded-lg shadow-inner ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`;
+                    newsItemDiv.innerHTML = `
+                        <p class="font-bold text-gray-100">${item.title}</p>
+                        <p class="text-gray-300 mt-1">${item.content}</p>
+                        <div class="mt-2 flex space-x-2 justify-end">
+                            <button data-id="${item.id}" class="edit-btn px-4 py-2 bg-yellow-500 text-white rounded-lg">แก้ไข</button>
+                            <button data-id="${item.id}" class="delete-btn px-4 py-2 bg-red-500 text-white rounded-lg">ลบ</button>
+                        </div>
+                    `;
+                    newsListContainer.appendChild(newsItemDiv);
+                });
+            };
+
+            const loadNews = async () => {
+                db.collection("news").onSnapshot(snapshot => {
+                    const news = [];
+                    snapshot.forEach(doc => {
+                        news.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderNews(news);
+                    if (auth.currentUser) {
+                        renderAdminNewsList(news);
+                    }
+                });
+            };
+
+            const saveNews = async (e) => {
+                e.preventDefault();
+                const id = newsIdInput.value;
+                const title = newsTitleInput.value;
+                const content = newsTextInput.value;
+                const link = newsLinkInput.value;
+                const newsItem = { title, content, link };
+
+                if (id) {
+                    await db.collection("news").doc(id).update(newsItem);
+                } else {
+                    await db.collection("news").add(newsItem);
+                }
+                newsForm.reset();
+            };
+
+            const editNews = (id) => {
+                const item = newsData.find(news => news.id === id);
+                if (item) {
+                    newsIdInput.value = item.id;
+                    newsTitleInput.value = item.title;
+                    newsTextInput.value = item.content;
+                    newsLinkInput.value = item.link;
+                }
+            };
+
+            const deleteNews = async (id) => {
+                if (confirm('คุณแน่ใจว่าต้องการลบข่าวนี้?')) {
+                    await db.collection("news").doc(id).delete();
+                }
+            };
+
+            const setupAdminListeners = () => {
+                newsForm.addEventListener('submit', saveNews);
+                newsListContainer.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('edit-btn')) {
+                        editNews(e.target.dataset.id);
+                    } else if (e.target.classList.contains('delete-btn')) {
+                        deleteNews(e.target.dataset.id);
+                    }
+                });
+                cancelEditBtn.addEventListener('click', () => newsForm.reset());
+                manageNewsBtn.addEventListener('click', () => adminModal.classList.remove('hidden'));
+            };
+            
             const renderMapButtons = () => {
                 const mapLinks = [
                     { name: "พัทลุง", url: "https://www.google.com/maps/d/embed?mid=1gz3hHP9gZ5bNvK04FBCYmRnp-QbHeM4I&ehbc=2E312F" },
@@ -563,12 +747,10 @@
                 });
             };
 
-            // Function to create filter buttons
             const renderFilterButtons = () => {
                 const units = [...new Set(data.map(item => item.unit))];
                 filterButtonsContainer.innerHTML = '';
                 
-                // Add "All" button
                 const allButton = document.createElement('button');
                 allButton.textContent = 'ทั้งหมด';
                 allButton.className = 'px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors';
@@ -588,13 +770,12 @@
                     filterButtonsContainer.appendChild(button);
                 });
             };
-
-            // Initial render
+            
             applyTheme();
             renderMapButtons();
             renderFilterButtons();
+            loadNews();
 
-            // Search functionality
             searchInput.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
                 const filteredData = data.filter(item => 
@@ -619,13 +800,11 @@
                 renderList(filteredData);
             });
             
-            // Theme toggle event listener
             themeToggle.addEventListener('click', () => {
                 isDarkMode = !isDarkMode;
                 applyTheme();
             });
 
-            // Event listener for dynamically added buttons
             mainContent.addEventListener('click', (e) => {
                 if (e.target.classList.contains('address-btn')) {
                     const lat = e.target.dataset.lat;
@@ -653,12 +832,24 @@
                     window.summarizeNews(link);
                 }
             });
+
+            adminLoginBtn.addEventListener('click', () => {
+                loginModal.classList.remove('hidden');
+            });
+
+            loginForm.addEventListener('submit', handleLogin);
+            
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    adminLoginBtn.classList.add('hidden');
+                    manageNewsBtn.classList.remove('hidden');
+                    setupAdminListeners();
+                } else {
+                    adminLoginBtn.classList.remove('hidden');
+                    manageNewsBtn.classList.add('hidden');
+                }
+            });
         });
     </script>
 </body>
 </html>
-
-
-
-
-
