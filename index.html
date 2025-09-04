@@ -182,7 +182,7 @@
 
             const systemPrompt = "Act as a professional news summarizer. Provide a concise, single-paragraph summary of the key findings from the article. The summary should be in Thai and be easy to understand.";
             const userQuery = `Summarize the content of this article: ${url}`;
-            const apiKey = "";
+            const apiKey = "AIzaSyAs5o8G7cgzH167SoUBSy7KnfBgxpSsuF";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
             const payload = {
@@ -285,24 +285,6 @@
         window.handleAddressClick = (lat, lng) => {
             const mapLink = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
             window.open(mapLink, '_blank');
-        };
-
-        window.getDirectionsFromHere = (lat, lng) => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const startLat = position.coords.latitude;
-                        const startLng = position.coords.longitude;
-                        const mapLink = `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=${lat},${lng}`;
-                        window.open(mapLink, '_blank');
-                    },
-                    (error) => {
-                        alert("ไม่สามารถรับตำแหน่งปัจจุบันได้ โปรดตรวจสอบการตั้งค่าเบราว์เซอร์และลองใหม่อีกครั้ง");
-                    }
-                );
-            } else {
-                alert("เบราว์เซอร์ของคุณไม่รองรับ Geolocation");
-            }
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -452,7 +434,7 @@
                     personnel: [
                         { role: "หัวหน้าหน่วย", name: "นายอาซิ เวาะเนาะ" },
                         { role: "ผู้ช่วยหน่วย", name: "นายสุรศักดิ์ นวลงาม" },
-                        { role: "ผู้ปฏิบัติงาน", name: "นายโอภาส วชิรอนันต์	" },
+                        { role: "ผู้ปฏิบัติงาน", name: "นายโอภาส วชิรอนันต์" },
                         { role: "ผู้ปฏิบัติงาน", name: "นายวีรพงศ์ สังขกูล" }
                     ]
                 },
@@ -605,22 +587,22 @@
                     const itemDiv = document.createElement('div');
                     itemDiv.className = `rounded-xl shadow-lg p-6 mb-6 ${bgColorClass} transition-colors duration-500`;
                     itemDiv.innerHTML = `
-                        <div class="py-4 flex justify-between items-center">
+                        <div class="flex-grow">
                             <span class="text-lg font-medium text-gray-900">${item.unit}</span>
-                            <div class="flex space-x-2">
-                                <button data-lat="${item.address.lat}" data-lng="${item.address.lng}" class="address-btn px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors">
-                                    กดไปยังสถานที่ตั้ง
-                                </button>
-                                <button data-unit="${item.unit}" data-phone="${item.emergencyContact.phone}" data-line="${item.emergencyContact.line}" class="contact-btn px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors">
-                                    ดูข้อมูลติดต่อ
-                                </button>
-                                <button data-unit="${item.unit}" data-lines='${JSON.stringify(item.responsibleLines)}' data-additional-details='${item.additionalDetails ? JSON.stringify(item.additionalDetails) : null}' data-personnel='${item.personnel ? JSON.stringify(item.personnel) : null}' class="details-btn px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors">
-                                    ดูรายละเอียด
-                                </button>
-                                <a href="${item.mapUrl}" target="_blank" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                    ไปยังแผนที่แนวสาย
-                                </a>
-                            </div>
+                        </div>
+                        <div class="flex space-x-2 mt-4">
+                            <button data-lat="${item.address.lat}" data-lng="${item.address.lng}" class="address-btn px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition-colors">
+                                กดไปยังสถานที่ตั้ง
+                            </button>
+                            <button data-unit="${item.unit}" data-phone="${item.emergencyContact.phone}" data-line="${item.emergencyContact.line}" class="contact-btn px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors">
+                                ดูข้อมูลติดต่อ
+                            </button>
+                            <button data-unit="${item.unit}" data-lines='${JSON.stringify(item.responsibleLines)}' data-additional-details='${item.additionalDetails ? JSON.stringify(item.additionalDetails) : null}' data-personnel='${item.personnel ? JSON.stringify(item.personnel) : null}' class="details-btn px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition-colors">
+                                ดูรายละเอียด
+                            </button>
+                            <a href="${item.mapUrl}" target="_blank" class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                                ไปยังแผนที่แนวสาย
+                            </a>
                         </div>
                     `;
                     mainContent.appendChild(itemDiv);
@@ -861,4 +843,3 @@
     </script>
 </body>
 </html>
-
