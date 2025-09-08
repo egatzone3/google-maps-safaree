@@ -16,6 +16,52 @@
 </head>
 <body class="bg-gray-900 text-gray-100 transition-colors duration-500">
 
+        <!-- ปุ่มลอย -->
+    <button id="floatingButton" class="fixed bottom-6 right-6 lg:bottom-12 lg:right-12 z-50 p-4 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+        </svg>
+    </button>
+
+    <!-- หน้าต่างป๊อปอัพพร้อมฟอร์ม -->
+    <div id="contactFormModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[100] hidden">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm m-4 transform transition-transform duration-300 scale-95 md:scale-100">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-indigo-600">ส่งข้อความถึงแอดมิน</h2>
+                <button id="closeButton" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="contactForm" class="space-y-4">
+                <div>
+                    <label for="senderName" class="block text-sm font-medium text-gray-700">ชื่อผู้ส่ง:</label>
+                    <input type="text" id="senderName" name="senderName" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border bg-gray-500">
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-medium text-gray-700">ข้อความ:</label>
+                    <textarea id="message" name="message" rows="4" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border bg-gray-500"></textarea>
+                </div>
+                <div>
+                    <label for="contactInfo" class="block text-sm font-medium text-gray-700">ข้อมูลติดต่อกลับ (เช่น อีเมล, เบอร์โทร):</label>
+                    <input type="text" id="contactInfo" name="contactInfo"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border bg-gray-500">
+                </div>
+                
+                <button type="submit" class="w-full bg-indigo-600 text-white p-3 rounded-md shadow-md hover:bg-indigo-700 transition duration-300 font-semibold">
+                    ส่งข้อความ
+                </button>
+            </form>
+            
+            <div id="statusMessage" class="mt-4 text-center hidden"></div>
+        </div>
+    </div>
+
     <div class="max-w-4xl mx-auto p-4 md:p-8">
         <!-- Header -->
         <header class="text-center mb-10 flex justify-between items-center">
@@ -855,5 +901,97 @@
             });
         });
     </script>
+
+    <!-- Script สำหรับฟอร์มการติดต่อและ Discord Webhook -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const floatingButton = document.getElementById('floatingButton');
+            const contactFormModal = document.getElementById('contactFormModal');
+            const closeButton = document.getElementById('closeButton');
+            const contactForm = document.getElementById('contactForm');
+            const statusMessage = document.getElementById('statusMessage');
+
+            // --- เปลี่ยน URL นี้เป็น URL ของ Discord Webhook ของคุณ ---
+            const webhookUrl = 'https://discordapp.com/api/webhooks/1414440893959639203/ApILou8WhKYI5eNfqUdlwKPqiyR3L8Zil__9K9BwgPFX1MGHCmcJpjKspaf8vYFMVeGp';
+
+            // แสดงหน้าต่างป๊อปอัพเมื่อคลิกปุ่ม
+            floatingButton.addEventListener('click', () => {
+                contactFormModal.classList.remove('hidden');
+                statusMessage.classList.add('hidden');
+                statusMessage.textContent = '';
+            });
+
+            // ซ่อนหน้าต่างป๊อปอัพเมื่อคลิกปุ่มปิด
+            closeButton.addEventListener('click', () => {
+                contactFormModal.classList.add('hidden');
+            });
+
+            // จัดการการส่งฟอร์ม
+            contactForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                statusMessage.textContent = 'กำลังส่ง...';
+                statusMessage.classList.remove('hidden', 'text-green-600', 'text-red-600');
+                statusMessage.classList.add('text-blue-600');
+
+                const senderName = document.getElementById('senderName').value.trim();
+                const message = document.getElementById('message').value.trim();
+                const contactInfo = document.getElementById('contactInfo').value.trim();
+
+                const payload = {
+                    content: '📢 **ข้อความใหม่จากเว็บไซต์!**',
+                    embeds: [
+                        {
+                            title: `ข้อความจาก: ${senderName}`,
+                            description: message,
+                            color: 5814783,
+                            fields: [
+                                {
+                                    name: 'ข้อมูลติดต่อกลับ',
+                                    value: contactInfo || 'ไม่ได้ระบุ',
+                                    inline: false
+                                }
+                            ],
+                            timestamp: new Date().toISOString(),
+                        }
+                    ]
+                };
+
+                try {
+                    const response = await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (response.ok) {
+                        statusMessage.textContent = 'ส่งข้อความสำเร็จแล้ว!';
+                        statusMessage.classList.remove('text-gray-500', 'text-red-600');
+                        statusMessage.classList.add('text-green-600');
+                        contactForm.reset();
+                        setTimeout(() => {
+                            contactFormModal.classList.add('hidden');
+                        }, 2000);
+                    } else {
+                        const errorData = await response.text();
+                        console.error('Webhook error:', response.status, errorData);
+                        statusMessage.textContent = `เกิดข้อผิดพลาดในการส่ง: ${response.statusText}`;
+                        statusMessage.classList.remove('text-gray-500', 'text-green-600');
+                        statusMessage.classList.add('text-red-600');
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    statusMessage.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+                    statusMessage.classList.remove('text-gray-500', 'text-green-600');
+                    statusMessage.classList.add('text-red-600');
+                }
+            });
+        });
+    </script>
+
+
 </body>
 </html>
+
