@@ -16,15 +16,19 @@
 </head>
 <body class="bg-gray-900 text-gray-100 transition-colors duration-500">
 
-        <!-- ปุ่มลอย -->
-    <button id="floatingButton" class="fixed bottom-6 right-6 lg:bottom-12 lg:right-12 z-50 p-4 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+        <button id="floatingButton" class="fixed bottom-6 right-6 lg:bottom-12 lg:right-12 z-50 p-4 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
         </svg>
     </button>
+    
+    <button id="reportButton" class="fixed bottom-24 right-6 lg:bottom-36 lg:right-12 z-50 p-4 bg-yellow-500 text-white rounded-full shadow-lg hover:bg-yellow-600 transition duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11 21h2a1 1 0 0 0 1-1v-5h3a1 1 0 0 0 .707-1.707l-6-6a1 1 0 0 0-1.414 0l-6 6A1 1 0 0 0 7 14h3v5a1 1 0 0 0 1 1zM12 2L6 8h3v5h6V8h3z" />
+        </svg>
+    </button>
 
-    <!-- หน้าต่างป๊อปอัพพร้อมฟอร์ม -->
     <div id="contactFormModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[100] hidden">
         <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm m-4 transform transition-transform duration-300 scale-95 md:scale-100">
             <div class="flex justify-between items-center mb-6">
@@ -61,24 +65,71 @@
             <div id="statusMessage" class="mt-4 text-center hidden"></div>
         </div>
     </div>
+    
+    <div id="reportPoleModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[100] hidden">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm m-4 transform transition-transform duration-300 scale-95 md:scale-100">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-yellow-600">รายงานข้อมูลเสาไฟฟ้า</h2>
+                <button id="closeReportModal" class="text-gray-400 hover:text-gray-600 transition duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="reportPoleForm" class="space-y-4">
+                <div>
+                    <label for="reportType" class="block text-sm font-medium text-gray-700">เพิ่ม/แก้ไข:</label>
+                    <select id="reportType" name="reportType" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                        <option value="">เลือกประเภท</option>
+                        <option value="เพิ่มข้อมูลเสาไฟฟ้าใหม่">เพิ่มข้อมูลเสาไฟฟ้าใหม่</option>
+                        <option value="แก้ไขข้อมูลเสาไฟฟ้า">แก้ไขข้อมูลเสาไฟฟ้า</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="lineName" class="block text-sm font-medium text-gray-700">แนวสาย:</label>
+                    <input type="text" id="lineName" name="lineName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                </div>
+                <div>
+                    <label for="googleMapLink" class="block text-sm font-medium text-gray-700">link google map:</label>
+                    <input type="url" id="googleMapLink" name="googleMapLink" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                </div>
+                <div>
+                    <label for="otherInfo" class="block text-sm font-medium text-gray-700">อื่นๆ:</label>
+                    <textarea id="otherInfo" name="otherInfo" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500"></textarea>
+                </div>
+                <div>
+                    <label for="reporterName" class="block text-sm font-medium text-gray-700">ผู้แจ้ง:</label>
+                    <input type="text" id="reporterName" name="reporterName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                </div>
+                <div>
+                    <label for="reporterUnit" class="block text-sm font-medium text-gray-700">หน่วยงาน:</label>
+                    <input type="text" id="reporterUnit" name="reporterUnit" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                </div>
+                
+                <button type="submit" class="w-full bg-yellow-500 text-white p-3 rounded-md shadow-md hover:bg-yellow-600 transition duration-300 font-semibold">
+                    ส่งรายงาน
+                </button>
+            </form>
+            
+            <div id="reportStatusMessage" class="mt-4 text-center hidden"></div>
+        </div>
+    </div>
+
 
     <div class="max-w-4xl mx-auto p-4 md:p-8">
-        <!-- Header -->
         <header class="text-center mb-10 flex justify-between items-center">
             <div class="flex-grow text-left">
                 <h1 class="text-4xl md:text-5xl font-extrabold text-blue-400 tracking-tight transition-colors duration-500">แผนที่นำทางสายส่งแรงสูง</h1>
                 <h2 class="text-xl md:text-2xl font-semibold text-gray-300 mt-2 transition-colors duration-500">Egat-GoogleMap-By.SAFAREE</h2>
             </div>
             
-            <!-- Right-side container for counter and theme toggle -->
             <div class="flex items-center space-x-4">
-                <!-- Visitor Counter -->
                 <div class="text-sm text-center">
                     <h3 class="font-bold text-blue-400 transition-colors duration-500">ผู้เข้าใช้งาน</h3>
                     <p id="visitorCounter" class="text-xl font-extrabold text-green-400">0</p>
                 </div>
 
-                <!-- Admin Login/Manage Button -->
                 <button id="adminLoginBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     ผู้ดูแล
                 </button>
@@ -86,7 +137,6 @@
                     จัดการข่าว
                 </button>
 
-                <!-- Theme Toggle Button -->
                 <button id="themeToggle" class="p-3 rounded-full bg-gray-800 text-yellow-400 shadow-lg hover:scale-110 transition-transform">
                     <svg xmlns="http://www.w3.org/2000/svg" id="sun-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -98,7 +148,6 @@
             </div>
         </header>
 
-        <!-- Search Bar -->
         <div class="mb-10 relative">
             <input type="text" id="searchInput" placeholder="ค้นหาข้อมูล..." class="w-full px-5 py-4 pl-12 bg-gray-800 text-gray-100 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-500">
             <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6 transition-colors duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -106,49 +155,39 @@
             </svg>
         </div>
 
-        <!-- Filter Buttons -->
         <div id="filterButtons" class="mb-6 flex flex-wrap justify-center gap-2">
-            <!-- Filter buttons will be populated by JavaScript -->
-        </div>
+            </div>
 
-        <!-- Main Content (Categories & Links) -->
         <main id="mainContent" class="space-y-6">
-            <!-- Data will be populated here by JavaScript -->
-        </main>
+            </main>
 
-        <!-- Embedded Map Section -->
         <section class="mt-12 bg-gray-800 rounded-xl shadow-2xl p-6 transition-colors duration-500">
             <h3 class="text-2xl font-bold text-gray-100 mb-4 transition-colors duration-500">แผนที่รวม</h3>
             
             <div id="mapButtons" class="mb-4 flex flex-wrap justify-center gap-2">
-                <!-- Map buttons will be populated here by JavaScript -->
-            </div>
+                </div>
             
             <div class="relative w-full overflow-hidden rounded-lg shadow-inner" style="padding-top: 75%;">
                 <iframe id="combinedMap" src="https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F" title="แผนที่นำทาง" class="absolute top-0 left-0 w-full h-full" allowfullscreen="" loading="lazy"></iframe>
             </div>
         </section>
 
-        <!-- News Section -->
         <section class="mt-12 bg-gray-800 rounded-xl shadow-2xl p-6 transition-colors duration-500">
             <h3 class="text-2xl font-bold text-gray-100 mb-4 transition-colors duration-500">กระดานข่าว</h3>
             <div id="newsContent" class="space-y-4">
-                <!-- News items will be populated here by JavaScript -->
-            </div>
+                </div>
         </section>
         
-        <!-- About Section -->
         <section class="mt-12 text-center text-gray-400 text-sm">
-            <p>&copy; 2025 แผนที่นำทางสายส่งแรงสูง</p>
+            <p>© 2025 แผนที่นำทางสายส่งแรงสูง</p>
             <p>ผู้ดูแลเว็บไซต์: Safaree Labaisor (<a href="https://www.facebook.com/lib.egat" target="_blank" class="text-blue-400 hover:underline">Facebook</a>, <a href="tel:0845071339" class="text-blue-400 hover:underline">โทร.0845071339</a>, <a href="https://line.me/ti/p/DUtMF21PbA" target="_blank" class="text-blue-400 hover:underline">Line</a>)</p>
         </section>
         
-        <!-- Modal for AI Summary & Contact Info -->
         <div id="infoModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
             <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-2xl overflow-y-auto max-h-[90vh]">
                 <div class="flex justify-between items-center mb-4 sticky top-0 bg-gray-800">
                     <h4 id="modalTitle" class="text-xl font-bold text-gray-100"></h4>
-                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-100">&times;</button>
+                    <button id="closeModalBtn" class="text-gray-400 hover:text-gray-100">×</button>
                 </div>
                 <div id="modalContent" class="text-gray-300 text-left">
                     <p>กำลังโหลดข้อมูล...</p>
@@ -156,12 +195,11 @@
             </div>
         </div>
         
-        <!-- Admin Modal for News Management -->
         <div id="adminModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
             <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-2xl overflow-y-auto max-h-[90vh]">
                 <div class="flex justify-between items-center mb-4 sticky top-0 bg-gray-800">
                     <h4 class="text-xl font-bold text-gray-100">จัดการข่าวสาร</h4>
-                    <button id="closeAdminModalBtn" class="text-gray-400 hover:text-gray-100">&times;</button>
+                    <button id="closeAdminModalBtn" class="text-gray-400 hover:text-gray-100">×</button>
                 </div>
                 <div id="adminContent">
                     <form id="newsForm" class="space-y-4">
@@ -184,18 +222,16 @@
                         </div>
                     </form>
                     <div id="newsList" class="mt-8 space-y-4">
-                        <!-- News items for admin will be populated here -->
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>
 
-        <!-- Login Modal -->
         <div id="loginModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
             <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-1/2 max-w-sm">
                 <div class="flex justify-between items-center mb-4">
                     <h4 class="text-xl font-bold text-gray-100">ล็อกอินผู้ดูแล</h4>
-                    <button id="closeLoginModalBtn" class="text-gray-400 hover:text-gray-100">&times;</button>
+                    <button id="closeLoginModalBtn" class="text-gray-400 hover:text-gray-100">×</button>
                 </div>
                 <form id="loginForm" class="space-y-4">
                     <div>
@@ -587,6 +623,13 @@
             const loginPasswordInput = document.getElementById('loginPassword');
             const closeLoginModalBtn = document.getElementById('closeLoginModalBtn');
 
+            const reportButton = document.getElementById('reportButton');
+            const reportPoleModal = document.getElementById('reportPoleModal');
+            const closeReportModal = document.getElementById('closeReportModal');
+            const reportPoleForm = document.getElementById('reportPoleForm');
+            const reportStatusMessage = document.getElementById('reportStatusMessage');
+
+
             let isDarkMode = true;
 
             const handleLogin = async (e) => {
@@ -597,7 +640,14 @@
                     await auth.signInWithEmailAndPassword(email, password);
                     loginModal.classList.add('hidden');
                 } catch (error) {
-                    alert('ล็อกอินไม่สำเร็จ');
+                    // Use a custom message box instead of alert()
+                    const customAlert = document.createElement('div');
+                    customAlert.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-600 text-white p-4 rounded-lg shadow-lg z-[200]';
+                    customAlert.textContent = 'ล็อกอินไม่สำเร็จ';
+                    document.body.appendChild(customAlert);
+                    setTimeout(() => {
+                        customAlert.remove();
+                    }, 3000);
                     console.error('Login error:', error);
                 }
             };
@@ -757,9 +807,26 @@
             };
 
             const deleteNews = async (id) => {
-                if (confirm('คุณแน่ใจว่าต้องการลบข่าวนี้?')) {
+                // Use a custom confirmation box
+                const customConfirm = document.createElement('div');
+                customConfirm.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-800 p-8 rounded-lg shadow-lg z-[200]';
+                customConfirm.innerHTML = `
+                    <p class="text-white mb-4">คุณแน่ใจว่าต้องการลบข่าวนี้?</p>
+                    <div class="flex justify-end space-x-2">
+                        <button id="confirmYes" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">ใช่</button>
+                        <button id="confirmNo" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">ไม่</button>
+                    </div>
+                `;
+                document.body.appendChild(customConfirm);
+
+                document.getElementById('confirmYes').addEventListener('click', async () => {
                     await db.collection("news").doc(id).delete();
-                }
+                    customConfirm.remove();
+                });
+
+                document.getElementById('confirmNo').addEventListener('click', () => {
+                    customConfirm.remove();
+                });
             };
 
             const setupAdminListeners = () => {
@@ -902,7 +969,6 @@
         });
     </script>
 
-    <!-- Script สำหรับฟอร์มการติดต่อและ Discord Webhook -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const floatingButton = document.getElementById('floatingButton');
@@ -990,8 +1056,106 @@
             });
         });
     </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reportButton = document.getElementById('reportButton');
+            const reportPoleModal = document.getElementById('reportPoleModal');
+            const closeReportModal = document.getElementById('closeReportModal');
+            const reportPoleForm = document.getElementById('reportPoleForm');
+            const reportStatusMessage = document.getElementById('reportStatusMessage');
 
+            // --- Replace this with your Discord Webhook URL for reports ---
+            const reportWebhookUrl = 'https://discordapp.com/api/webhooks/1414440893959639203/ApILou8WhKYI5eNfqUdlwKPqiyR3L8Zil__9K9BwgPFX1MGHCmcJpjKspaf8vYFMVeGp'; // **Change this URL**
 
+            // Show the modal when the button is clicked
+            reportButton.addEventListener('click', () => {
+                reportPoleModal.classList.remove('hidden');
+                reportStatusMessage.classList.add('hidden');
+                reportStatusMessage.textContent = '';
+            });
+
+            // Hide the modal when the close button is clicked
+            closeReportModal.addEventListener('click', () => {
+                reportPoleModal.classList.add('hidden');
+            });
+
+            // Handle form submission
+            reportPoleForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                reportStatusMessage.textContent = 'กำลังส่ง...';
+                reportStatusMessage.classList.remove('hidden', 'text-green-600', 'text-red-600');
+                reportStatusMessage.classList.add('text-blue-600');
+
+                const reportType = document.getElementById('reportType').value.trim();
+                const lineName = document.getElementById('lineName').value.trim();
+                const googleMapLink = document.getElementById('googleMapLink').value.trim();
+                const otherInfo = document.getElementById('otherInfo').value.trim();
+                const reporterName = document.getElementById('reporterName').value.trim();
+                const reporterUnit = document.getElementById('reporterUnit').value.trim();
+
+                const payload = {
+                    content: '🚨 **รายงานข้อมูลเสาไฟฟ้าใหม่!**',
+                    embeds: [
+                        {
+                            title: `${reportType}`,
+                            description: `**ผู้แจ้ง:** ${reporterName}\n**หน่วยงาน:** ${reporterUnit}`,
+                            color: 16776960, // Yellow color
+                            fields: [
+                                {
+                                    name: 'แนวสาย',
+                                    value: lineName,
+                                    inline: false
+                                },
+                                {
+                                    name: 'ลิงก์ Google Maps',
+                                    value: googleMapLink,
+                                    inline: false
+                                },
+                                {
+                                    name: 'รายละเอียดอื่นๆ',
+                                    value: otherInfo || 'ไม่ได้ระบุ',
+                                    inline: false
+                                }
+                            ],
+                            timestamp: new Date().toISOString(),
+                        }
+                    ]
+                };
+
+                try {
+                    const response = await fetch(reportWebhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (response.ok) {
+                        reportStatusMessage.textContent = 'ส่งรายงานสำเร็จแล้ว!';
+                        reportStatusMessage.classList.remove('text-blue-600', 'text-red-600');
+                        reportStatusMessage.classList.add('text-green-600');
+                        reportPoleForm.reset();
+                        setTimeout(() => {
+                            reportPoleModal.classList.add('hidden');
+                        }, 2000);
+                    } else {
+                        const errorData = await response.text();
+                        console.error('Webhook error:', response.status, errorData);
+                        reportStatusMessage.textContent = `เกิดข้อผิดพลาดในการส่ง: ${response.statusText}`;
+                        reportStatusMessage.classList.remove('text-blue-600', 'text-green-600');
+                        reportStatusMessage.classList.add('text-red-600');
+                    }
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    reportStatusMessage.textContent = 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+                    reportStatusMessage.classList.remove('text-blue-600', 'text-green-600');
+                    reportStatusMessage.classList.add('text-red-600');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-
