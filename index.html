@@ -223,6 +223,8 @@
             </div>
         </section>
         
+
+
         <!-- About Section -->
         <section class="mt-12 text-center text-gray-400 text-sm">
             <p>&copy; 2025 แผนที่นำทางสายส่งแรงสูง</p>
@@ -637,27 +639,7 @@
                 }
             ];
 
-            const newsData = [
-                { id: "news1", title: "ข่าวประชาสัมพันธ์:", content: "ประกาศรับสมัครงาน", link: "https://www.egat.co.th/home/recruitment/" },
-                { id: "news2", title: "คู่มือผู้ใช้:", content: "ดาวน์โหลดคู่มือการใช้งานแอปพลิเคชัน", link: "https://docs.google.com/document/u/0/d/1-2lWp06eBv7PssiHLC_Yhw1Bj_Qq0Z1I-S1yI_axCr8/" }
-            ];
-            
-            // This object holds your Google Drive file links
-            const driveLinks = [
-                {
-                    name: "เอกสารนำเสนอโครงการ.pptx",
-                    url: "https://drive.google.com/file/d/14H8GtGLvCuHSUD2B8XI9wShSJzrLmKls/edit?usp=sharing" // Replace with your actual link
-                },
-                {
-                    name: "ตารางงบประมาณ.xlsx",
-                    url: "https://drive.google.com/drive/folders/14H8GtGLvCuHSUD2B8XI9wShSJzrLmKls" // Replace with your actual link
-                },
-                {
-                    name: "รายงานการประชุม.docx",
-                    url: "https://drive.google.com/drive/folders/14H8GtGLvCuHSUD2B8XI9wShSJzrLmKls" // Replace with your actual link
-                }
-                // Add more files here
-            ];
+            const newsData = []; // Remove hard-coded news data
 
             const mainContent = document.getElementById('mainContent');
             const searchInput = document.getElementById('searchInput');
@@ -689,6 +671,11 @@
             const loginEmailInput = document.getElementById('loginEmail');
             const loginPasswordInput = document.getElementById('loginPassword');
             const closeLoginModalBtn = document.getElementById('closeLoginModalBtn');
+            
+            const driveLinkButton = document.getElementById('driveLinkButton');
+            const driveLinksModal = document.getElementById('driveLinksModal');
+            const closeDriveModal = document.getElementById('closeDriveModal');
+            const driveLinksContainer = document.getElementById('driveLinksContainer');
 
             const floatingButton = document.getElementById('floatingButton');
             const contactFormModal = document.getElementById('contactFormModal');
@@ -701,13 +688,24 @@
             const closeReportModal = document.getElementById('closeReportModal');
             const reportPoleForm = document.getElementById('reportPoleForm');
             const reportStatusMessage = document.getElementById('reportStatusMessage');
-
-            const driveLinkButton = document.getElementById('driveLinkButton');
-            const driveLinksModal = document.getElementById('driveLinksModal');
-            const closeDriveModal = document.getElementById('closeDriveModal');
-            const driveLinksContainer = document.getElementById('driveLinksContainer');
-
-
+            
+            // This object holds your Google Drive file links
+            const driveLinks = [
+                {
+                    name: "📋 Structure List 📋",
+                    url: "https://drive.google.com/drive/folders/14H8GtGLvCuHSUD2B8XI9wShSJzrLmKls" // Replace with your actual link
+                },
+                {
+                    name: "🗾 แผนที่ กสต-ส. 🗺",
+                    url: "https://www.google.com/maps/d/embed?mid=1tZzceX3ZO9agkpMh1_XUurobvWo&hl=th&ehbc=2E312F" // Replace with your actual link
+                },
+                {
+                    name: "🌏 maps 1:50,000 🌏",
+                    url: "https://www.google.com/maps/d/embed?mid=1DkDSvfmeYFh9tT-fUT0tTFLyU28&ehbc=2E312F" // Replace with your actual link
+                }
+                // Add more files here
+            ];
+            
             let isDarkMode = true;
 
             const handleLogin = async (e) => {
@@ -747,8 +745,13 @@
                 loginModal.classList.remove('hidden');
             });
             
-            closeDriveModal.addEventListener('click', () => {
-                driveLinksModal.classList.add('hidden');
+            // Event listeners for floating buttons
+            floatingButton.addEventListener('click', () => {
+                contactFormModal.classList.remove('hidden');
+            });
+
+            reportButton.addEventListener('click', () => {
+                reportPoleModal.classList.remove('hidden');
             });
 
             const renderDriveLinks = () => {
@@ -767,15 +770,11 @@
                 renderDriveLinks();
                 driveLinksModal.classList.remove('hidden');
             });
-
-            // Event listeners for floating buttons
-            floatingButton.addEventListener('click', () => {
-                contactFormModal.classList.remove('hidden');
+            
+            closeDriveModal.addEventListener('click', () => {
+                driveLinksModal.classList.add('hidden');
             });
 
-            reportButton.addEventListener('click', () => {
-                reportPoleModal.classList.remove('hidden');
-            });
 
             const applyTheme = () => {
                 const color = isDarkMode ? 'gray-900' : 'gray-100';
@@ -790,7 +789,7 @@
                     moonIcon.classList.remove('hidden');
                 }
                 renderList(data);
-                renderNews(newsData);
+                loadNews(); // Call loadNews here to ensure news data is re-rendered with the new theme
             };
 
             const renderList = (filteredData) => {
@@ -827,7 +826,7 @@
                 });
             };
             
-
+            // This function now exclusively uses data from the Firebase snapshot
             const renderNews = (newsItems) => {
                 newsContent.innerHTML = '';
                 if (newsItems.length === 0) {
@@ -853,6 +852,7 @@
                 });
             };
 
+            // This function now exclusively uses data from the Firebase snapshot
             const renderAdminNewsList = (newsItems) => {
                 newsListContainer.innerHTML = '';
                 if (newsItems.length === 0) {
@@ -1003,6 +1003,8 @@
             applyTheme();
             renderMapButtons();
             renderFilterButtons();
+            
+            // This function now handles all news data fetching and rendering
             loadNews();
 
             searchInput.addEventListener('input', (e) => {
