@@ -146,19 +146,30 @@
 
     <div class="max-w-4xl mx-auto p-4 md:p-8">
         <!-- Header -->
-        <header class="text-center mb-10 flex flex-col items-center">
+        <header class="relative text-center mb-10 flex flex-col items-center">
             <div class="w-full">
                 <h1 class="text-4xl md:text-5xl font-extrabold text-blue-400 tracking-tight transition-colors duration-500">🗼แผนที่นำทางสายส่ง🗼</h1>
                 <h2 class="text-xl md:text-2xl font-semibold text-gray-300 mt-2 transition-colors duration-500">⚡️ Egat-GoogleMap-By.SAFAREE 🚕</h2>
             </div>
 
-            <!-- Visitor counter and header actions -->
-            <div class="w-full mt-6 flex flex-wrap items-center justify-center gap-3">
-                <div class="text-sm text-center min-w-[80px]">
+            <!-- Visitor counter and theme toggle: top-right -->
+            <div class="absolute top-0 right-0 flex items-center gap-3">
+                <div class="text-sm text-center min-w-[70px]">
                     <h3 class="font-bold text-blue-400 transition-colors duration-500">ผู้เข้าใช้งาน</h3>
                     <p id="visitorCounter" class="text-xl font-extrabold text-green-400">0</p>
                 </div>
+                <button id="themeToggle" class="p-3 rounded-full bg-gray-800 text-yellow-400 shadow-lg hover:scale-110 transition-transform" title="เปลี่ยนโหมดมืด/สว่าง">
+                    <svg xmlns="http://www.w3.org/2000/svg" id="sun-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" id="moon-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
 
+            <!-- Main header actions -->
+            <div class="w-full mt-6 flex flex-wrap items-center justify-center gap-3">
                 <button id="adminLoginBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     ผู้ดูแล
                 </button>
@@ -171,13 +182,14 @@
                 <button id="dashboardBtn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     Dashboard
                 </button>
-                <button id="themeToggle" class="p-3 rounded-full bg-gray-800 text-yellow-400 shadow-lg hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" id="sun-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" id="moon-icon" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
+                <button id="favoritesBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
+                    ⭐ รายการโปรด
+                </button>
+                <button id="recentBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
+                    รายการล่าสุด
+                </button>
+                <button id="refreshPageBtn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors" title="รีเฟรชหน้าเว็บ หรือกด Ctrl+F5 บน PC">
+                    รีเฟรช
                 </button>
             </div>
         </header>
@@ -478,7 +490,8 @@
             detailsHtml += '<div class="overflow-x-auto mb-6"><table class="w-full text-sm text-left text-gray-400"><thead><tr><th class="py-2 px-4 border-b">แนวสาย</th><th class="py-2 px-4 border-b">ขนาดสาย</th><th class="py-2 px-4 border-b">ความยาว (Km)</th><th class="py-2 px-4 border-b">จำนวนเสา</th><th class="py-2 px-4 border-b">ขอบเขตรับผิดชอบ</th><th class="py-2 px-4 border-b">บสส.</th><th class="py-2 px-4 border-b">จำนวนลูกถ้วย/เฟส</th></tr></thead><tbody>';
             responsibleLines.forEach(line => {
                 detailsHtml += `<tr class="border-b border-gray-700">`;
-                detailsHtml += `<td class="py-2 px-4">${line.lineName}</td>`;
+                const lineFavorite = window.isFavoriteLine ? window.isFavoriteLine(line.lineName) : false;
+                detailsHtml += `<td class="py-2 px-4"><button type="button" data-favorite-line="${line.lineName}" class="mr-2 text-lg" title="รายการโปรด">${lineFavorite ? '★' : '☆'}</button>${line.lineName}</td>`;
                 detailsHtml += `<td class="py-2 px-4">${line.cableSize}</td>`;
                 detailsHtml += `<td class="py-2 px-4">${line.length}</td>`;
                 detailsHtml += `<td class="py-2 px-4">${line.towers}</td>`;
@@ -524,6 +537,35 @@
                 : '';
             const mapLink = `https://www.google.com/maps/dir/?api=1${origin}&destination=${lat},${lng}`;
             window.open(mapLink, '_blank');
+        };
+
+        // รายการโปรดและรายการล่าสุดของผู้ใช้เครื่องนี้
+        const favoritesStorageKey = 'egatMapFavorites';
+        const recentStorageKey = 'egatMapRecentItems';
+        const readLocalList = key => {
+            try {
+                const value = JSON.parse(localStorage.getItem(key) || '[]');
+                return Array.isArray(value) ? value : [];
+            } catch (error) {
+                console.error('อ่านข้อมูลที่บันทึกไว้ไม่สำเร็จ:', error);
+                return [];
+            }
+        };
+        const writeLocalList = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+        window.isFavoriteUnit = unit => readLocalList(favoritesStorageKey).some(item => item.type === 'unit' && item.value === unit);
+        window.isFavoriteLine = line => readLocalList(favoritesStorageKey).some(item => item.type === 'line' && item.value === line);
+        window.toggleFavoriteItem = (type, value) => {
+            const favorites = readLocalList(favoritesStorageKey);
+            const index = favorites.findIndex(item => item.type === type && item.value === value);
+            if (index >= 0) favorites.splice(index, 1);
+            else favorites.unshift({ type, value, timestamp: new Date().toISOString() });
+            writeLocalList(favoritesStorageKey, favorites.slice(0, 100));
+            return index < 0;
+        };
+        window.recordRecentItem = (type, value, details = '') => {
+            const recent = readLocalList(recentStorageKey).filter(item => !(item.type === type && item.value === value));
+            recent.unshift({ type, value, details, timestamp: new Date().toISOString() });
+            writeLocalList(recentStorageKey, recent.slice(0, 20));
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -768,7 +810,11 @@
             const dashboardSection = document.getElementById('dashboardSection');
             const dashboardBtn = document.getElementById('dashboardBtn');
             const closeDashboardBtn = document.getElementById('closeDashboardBtn');
+            const favoritesBtn = document.getElementById('favoritesBtn');
+            const recentBtn = document.getElementById('recentBtn');
+            const refreshPageBtn = document.getElementById('refreshPageBtn');
             let dashboardCharts = {};
+            let favoritesOnly = false;
             const mainViewSections = [
                 document.getElementById('searchSection'),
                 document.getElementById('locationTools'),
@@ -1072,6 +1118,38 @@
                 }
             });
 
+            modalContent.addEventListener('click', event => {
+                const lineButton = event.target.closest('[data-favorite-line]');
+                if (!lineButton) return;
+                const lineName = lineButton.dataset.favoriteLine;
+                const isFavorite = window.toggleFavoriteItem('line', lineName);
+                lineButton.textContent = isFavorite ? '★' : '☆';
+                if (favoritesOnly) applyAdvancedFilters();
+            });
+
+            const showRecentItems = () => {
+                const recentItems = readLocalList(recentStorageKey);
+                modalTitle.textContent = 'รายการล่าสุด';
+                modalContent.innerHTML = '';
+                if (!recentItems.length) {
+                    modalContent.innerHTML = '<p class="text-center text-gray-400">ยังไม่มีรายการล่าสุด</p>';
+                } else {
+                    recentItems.forEach(item => {
+                        const row = document.createElement('div');
+                        row.className = 'p-3 mb-2 rounded-lg bg-gray-700';
+                        const title = document.createElement('p');
+                        title.className = 'font-semibold text-gray-100';
+                        title.textContent = `${item.type === 'map' ? 'แผนที่' : item.type === 'line' ? 'แนวสาย' : 'หน่วยงาน'}: ${item.value}`;
+                        const detail = document.createElement('p');
+                        detail.className = 'text-sm text-gray-300 mt-1';
+                        detail.textContent = `${item.details || ''} | ${new Date(item.timestamp).toLocaleString('th-TH')}`;
+                        row.append(title, detail);
+                        modalContent.appendChild(row);
+                    });
+                }
+                infoModal.classList.remove('hidden');
+            };
+
             closeAdminModalBtn.addEventListener('click', () => {
                 adminModal.classList.add('hidden');
             });
@@ -1147,6 +1225,7 @@
                     itemDiv.className = `rounded-xl shadow-lg p-6 mb-6 ${bgColorClass} transition-colors duration-500`;
                     itemDiv.innerHTML = `
                         <div class="flex-grow">
+                            <button type="button" data-favorite-unit="${item.unit}" class="mr-2 text-2xl align-middle" title="รายการโปรด">${window.isFavoriteUnit(item.unit) ? '★' : '☆'}</button>
                             <span class="text-lg font-medium text-gray-900">${item.unit}</span>
                             ${distanceText ? `<p class="text-sm font-semibold text-gray-800 mt-1">${distanceText}</p>` : ''}
                         </div>
@@ -1317,6 +1396,7 @@
                 mapButtonsContainer.addEventListener('click', (e) => {
                     if (e.target.tagName === 'BUTTON' && e.target.dataset.url) {
                         combinedMapIframe.src = e.target.dataset.url;
+                        window.recordRecentItem('map', e.target.textContent.trim(), 'เปิดแผนที่รวม');
                         window.recordUsageHistory('map', e.target.textContent.trim(), 'เปิดแผนที่รวม');
                     }
                 });
@@ -1391,9 +1471,10 @@
                         (minLength === null || length >= minLength) &&
                         (maxLength === null || length <= maxLength)
                     );
+                    const matchesFavorites = !favoritesOnly || window.isFavoriteUnit(item.unit) || lines.some(line => window.isFavoriteLine(line.lineName));
 
                     return matchesGeneralSearch && matchesUnit && matchesVoltage && matchesCable &&
-                        matchesResponsible && matchesPersonnel && matchesLength;
+                        matchesResponsible && matchesPersonnel && matchesLength && matchesFavorites;
                 });
 
                 if (sortByDistance && window.currentUserLocation) {
@@ -1407,6 +1488,8 @@
             };
 
             const clearAdvancedFilters = () => {
+                favoritesOnly = false;
+                favoritesBtn.textContent = '⭐ รายการโปรด';
                 searchInput.value = '';
                 unitFilter.value = '';
                 voltageFilter.value = '';
@@ -1579,6 +1662,21 @@
                 .forEach(input => input.addEventListener('input', applyAdvancedFilters));
             [unitFilter, voltageFilter].forEach(select => select.addEventListener('change', applyAdvancedFilters));
             clearAdvancedSearchBtn.addEventListener('click', clearAdvancedFilters);
+            favoritesBtn.addEventListener('click', () => {
+                favoritesOnly = !favoritesOnly;
+                favoritesBtn.textContent = favoritesOnly ? 'แสดงทั้งหมด' : '⭐ รายการโปรด';
+                applyAdvancedFilters();
+            });
+            recentBtn.addEventListener('click', showRecentItems);
+            refreshPageBtn.addEventListener('click', () => {
+                window.location.reload();
+            });
+            document.addEventListener('keydown', event => {
+                if (event.key === 'F5' && (event.ctrlKey || event.metaKey)) {
+                    event.preventDefault();
+                    window.location.reload();
+                }
+            });
             getLocationBtn.addEventListener('click', () => {
                 if (!navigator.geolocation) {
                     locationStatus.textContent = 'เบราว์เซอร์นี้ไม่รองรับการระบุตำแหน่ง';
@@ -1637,21 +1735,29 @@
                 if (e.target.classList.contains('address-btn')) {
                     const lat = e.target.dataset.lat;
                     const lng = e.target.dataset.lng;
+                    window.recordRecentItem('unit', e.target.dataset.unit, 'เปิดเส้นทางไปยังสถานที่ตั้ง');
                     window.recordUsageHistory('unit', e.target.dataset.unit, 'เปิดเส้นทางไปยังสถานที่ตั้ง');
                     window.handleAddressClick(lat, lng);
                 } else if (e.target.classList.contains('contact-btn')) {
                     const unit = e.target.dataset.unit;
                     const phone = e.target.dataset.phone;
                     const line = e.target.dataset.line;
+                    window.recordRecentItem('unit', unit, 'เปิดข้อมูลติดต่อฉุกเฉิน');
                     window.recordUsageHistory('unit', unit, 'เปิดข้อมูลติดต่อฉุกเฉิน');
                     window.showContactInfo(unit, phone, line);
                 } else if (e.target.classList.contains('details-btn')) {
                     const unit = e.target.dataset.unit;
                     const item = data.find(d => d.unit === unit);
+                    window.recordRecentItem('unit', unit, 'เปิดรายละเอียดหน่วยงาน');
                     window.recordUsageHistory('unit', unit, 'เปิดรายละเอียดหน่วยงาน');
                     window.showDetails(item.unit, item.responsibleLines, item.additionalDetails, item.personnel);
                 } else if (e.target.classList.contains('line-map-btn')) {
+                    window.recordRecentItem('line', e.target.dataset.unit, 'เปิดแผนที่แนวสาย');
                     window.recordUsageHistory('line', e.target.dataset.unit, 'เปิดแผนที่แนวสาย');
+                } else if (e.target.closest('[data-favorite-unit]')) {
+                    const favoriteButton = e.target.closest('[data-favorite-unit]');
+                    window.toggleFavoriteItem('unit', favoriteButton.dataset.favoriteUnit);
+                    applyAdvancedFilters();
                 }
             });
 
