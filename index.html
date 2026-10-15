@@ -72,7 +72,7 @@
     
     <!-- Modal สำหรับรายงานข้อมูลเสาไฟฟ้า -->
     <div id="reportPoleModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-[100] hidden">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm m-4 transform transition-transform duration-300 scale-95 md:scale-100">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg m-4 transform transition-transform duration-300 scale-95 md:scale-100 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-yellow-600">รายงานข้อมูลเสาไฟฟ้า</h2>
                 <button id="closeReportModal" class="text-gray-400 hover:text-gray-600 transition duration-200">
@@ -96,8 +96,65 @@
                     <input type="text" id="lineName" name="lineName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
                 </div>
                 <div>
+                    <label for="problemType" class="block text-sm font-medium text-gray-700">ประเภทปัญหา:</label>
+                    <select id="problemType" name="problemType" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                        <option value="">เลือกประเภทปัญหา</option>
+                        <option value="เสาเอียง">เสาเอียง</option>
+                        <option value="สายขาด">สายขาด</option>
+                        <option value="ลูกถ้วยชำรุด">ลูกถ้วยชำรุด</option>
+                        <option value="อุปกรณ์ชำรุด">อุปกรณ์ชำรุด</option>
+                        <option value="อื่นๆ">อื่นๆ</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label for="urgency" class="block text-sm font-medium text-gray-700">ระดับความเร่งด่วน:</label>
+                        <select id="urgency" name="urgency" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                            <option value="ปกติ">ปกติ</option>
+                            <option value="เร่งด่วน">เร่งด่วน</option>
+                            <option value="ฉุกเฉิน">ฉุกเฉิน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="poleNumber" class="block text-sm font-medium text-gray-700">เลขเสา:</label>
+                        <input type="text" id="poleNumber" name="poleNumber" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="foundAt" class="block text-sm font-medium text-gray-700">วันที่และเวลาพบปัญหา:</label>
+                    <input type="datetime-local" id="foundAt" name="foundAt" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                </div>
+                <div>
+                    <label for="reportStatus" class="block text-sm font-medium text-gray-700">สถานะงาน:</label>
+                    <select id="reportStatus" name="reportStatus" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                        <option value="รอตรวจสอบ">รอตรวจสอบ</option>
+                        <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
+                        <option value="เสร็จแล้ว">เสร็จแล้ว</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label for="latitude" class="block text-sm font-medium text-gray-700">ละติจูด:</label>
+                        <input type="number" step="any" id="latitude" name="latitude" class="mt-1 block w-full rounded-md shadow-sm p-2 border bg-gray-500">
+                    </div>
+                    <div>
+                        <label for="longitude" class="block text-sm font-medium text-gray-700">ลองจิจูด:</label>
+                        <input type="number" step="any" id="longitude" name="longitude" class="mt-1 block w-full rounded-md shadow-sm p-2 border bg-gray-500">
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" id="getReportLocationBtn" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">ดึงพิกัด GPS ปัจจุบัน</button>
+                    <button type="button" id="openReportMapBtn" class="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">เปิด Google Maps</button>
+                </div>
+                <p id="reportLocationStatus" class="text-sm text-gray-600"></p>
+                <div>
                     <label for="googleMapLink" class="block text-sm font-medium text-gray-700">link google map:</label>
-                    <input type="url" id="googleMapLink" name="googleMapLink" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                    <input type="url" id="googleMapLink" name="googleMapLink" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2 border bg-gray-500">
+                </div>
+                <div>
+                    <label for="reportImages" class="block text-sm font-medium text-gray-700">แนบรูปภาพ (ไม่เกิน 3 รูป):</label>
+                    <input type="file" id="reportImages" name="reportImages" accept="image/jpeg,image/png,image/webp" multiple class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border bg-gray-500">
+                    <p class="text-xs text-gray-500 mt-1">ระบบจะย่อและบีบรูปก่อนส่งไป Google Drive</p>
                 </div>
                 <div>
                     <label for="otherInfo" class="block text-sm font-medium text-gray-700">อื่นๆ:</label>
@@ -146,14 +203,14 @@
 
     <div class="max-w-4xl mx-auto p-4 md:p-8">
         <!-- Header -->
-        <header class="relative text-center mb-10 flex flex-col items-center">
+        <header class="text-center mb-10 flex flex-col items-center">
             <div class="w-full">
                 <h1 class="text-4xl md:text-5xl font-extrabold text-blue-400 tracking-tight transition-colors duration-500">🗼แผนที่นำทางสายส่ง🗼</h1>
                 <h2 class="text-xl md:text-2xl font-semibold text-gray-300 mt-2 transition-colors duration-500">⚡️ Egat-GoogleMap-By.SAFAREE 🚕</h2>
             </div>
 
-            <!-- Visitor counter and theme toggle: top-right -->
-            <div class="absolute top-0 right-0 flex items-center gap-3">
+            <!-- บรรทัดที่ 3: ผู้เข้าใช้งานและปุ่มมืด/สว่าง -->
+            <div class="w-full mt-4 flex items-center justify-center gap-4">
                 <div class="text-sm text-center min-w-[70px]">
                     <h3 class="font-bold text-blue-400 transition-colors duration-500">ผู้เข้าใช้งาน</h3>
                     <p id="visitorCounter" class="text-xl font-extrabold text-green-400">0</p>
@@ -166,15 +223,15 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                 </button>
+                <button id="manageNewsBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md hidden transition-colors">
+                    เมนูแอดมิน
+                </button>
             </div>
 
-            <!-- Main header actions -->
-            <div class="w-full mt-6 flex flex-wrap items-center justify-center gap-3">
+            <!-- บรรทัดที่ 4: ปุ่มการทำงานต่าง ๆ -->
+            <div class="w-full mt-4 flex flex-wrap items-center justify-center gap-3">
                 <button id="adminLoginBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     ผู้ดูแล
-                </button>
-                <button id="manageNewsBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md hidden transition-colors">
-                    จัดการข่าว
                 </button>
                 <button id="driveLinkButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     ไดรฟ์
@@ -308,7 +365,19 @@
 
         <!-- News Section -->
         <section id="newsSection" class="mt-12 bg-gray-800 rounded-xl shadow-2xl p-6 transition-colors duration-500">
-            <h3 class="text-2xl font-bold text-gray-100 mb-4 transition-colors duration-500">กระดานข่าว</h3>
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                <h3 class="text-2xl font-bold text-gray-100 transition-colors duration-500">กระดานข่าว</h3>
+                <div class="flex items-center gap-2">
+                    <span id="newsUnreadCount" class="text-sm text-yellow-300"></span>
+                    <button id="enableNewsNotificationsBtn" type="button" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">เปิดแจ้งเตือนข่าว</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
+                <input id="newsSearchInput" type="search" placeholder="ค้นหาข่าว..." class="px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="newsCategoryFilter" class="px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">ทุกประเภทข่าว</option>
+                </select>
+            </div>
             <div id="newsContent" class="space-y-4">
                 <!-- News items will be populated here by JavaScript -->
             </div>
@@ -357,12 +426,53 @@
                             <label for="newsLink" class="block text-sm font-medium text-gray-400">ลิงก์</label>
                             <input type="url" id="newsLink" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label for="newsCategory" class="block text-sm font-medium text-gray-400">ประเภทข่าว</label>
+                                <input type="text" id="newsCategory" placeholder="เช่น ประกาศ, ข่าวสาร, ด่วน" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label for="newsDate" class="block text-sm font-medium text-gray-400">วันที่ข่าว</label>
+                                <input type="date" id="newsDate" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="newsAuthor" class="block text-sm font-medium text-gray-400">ผู้เขียนข่าว</label>
+                            <input type="text" id="newsAuthor" placeholder="ชื่อผู้เขียนหรือหน่วยงาน" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="newsImageUrl" class="block text-sm font-medium text-gray-400">URL รูปภาพข่าว</label>
+                            <input type="url" id="newsImageUrl" placeholder="https://..." class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <label class="flex items-center gap-2 text-sm text-gray-300">
+                                <input type="checkbox" id="newsPinned" class="h-4 w-4">
+                                ข่าวสำคัญ/ปักหมุด
+                            </label>
+                            <label class="flex items-center gap-2 text-sm text-gray-300">
+                                <input type="checkbox" id="newsPublished" class="h-4 w-4" checked>
+                                เผยแพร่ข่าว
+                            </label>
+                        </div>
+                        <div>
+                            <label for="newsExpiry" class="block text-sm font-medium text-gray-400">วันหมดอายุข่าว (เว้นว่างได้)</label>
+                            <input type="date" id="newsExpiry" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
                         <div class="flex justify-end space-x-2">
                             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">บันทึก</button>
                             <button type="button" id="cancelEditBtn" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">ยกเลิก</button>
                         </div>
                     </form>
-                    <div id="newsList" class="mt-8 space-y-4">
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input type="search" id="adminNewsSearch" placeholder="ค้นหาข่าวในเมนูแอดมิน..." class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <select id="adminNewsSort" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="latest">เรียงข่าวล่าสุดก่อน</option>
+                            <option value="oldest">เรียงข่าวเก่าสุดก่อน</option>
+                            <option value="pinned">ข่าวปักหมุดก่อน</option>
+                            <option value="title">เรียงตามหัวข้อ</option>
+                        </select>
+                    </div>
+                    <div id="newsList" class="mt-4 space-y-4">
                         <!-- News items for admin will be populated here -->
                     </div>
 
@@ -839,6 +949,10 @@
             const moonIcon = document.getElementById('moon-icon');
             const body = document.body;
             const newsContent = document.getElementById('newsContent');
+            const newsSearchInput = document.getElementById('newsSearchInput');
+            const newsCategoryFilter = document.getElementById('newsCategoryFilter');
+            const enableNewsNotificationsBtn = document.getElementById('enableNewsNotificationsBtn');
+            const newsUnreadCount = document.getElementById('newsUnreadCount');
             const mapButtonsContainer = document.getElementById('mapButtons');
             const combinedMapIframe = document.getElementById('combinedMap');
             const infoModal = document.getElementById('infoModal');
@@ -856,6 +970,15 @@
             const newsTitleInput = document.getElementById('newsTitle');
             const newsTextInput = document.getElementById('newsText');
             const newsLinkInput = document.getElementById('newsLink');
+            const newsCategoryInput = document.getElementById('newsCategory');
+            const newsDateInput = document.getElementById('newsDate');
+            const newsAuthorInput = document.getElementById('newsAuthor');
+            const newsImageUrlInput = document.getElementById('newsImageUrl');
+            const newsPinnedInput = document.getElementById('newsPinned');
+            const newsPublishedInput = document.getElementById('newsPublished');
+            const newsExpiryInput = document.getElementById('newsExpiry');
+            const adminNewsSearch = document.getElementById('adminNewsSearch');
+            const adminNewsSort = document.getElementById('adminNewsSort');
             const cancelEditBtn = document.getElementById('cancelEditBtn');
             const adminHistoryList = document.getElementById('adminHistoryList');
             const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -883,6 +1006,18 @@
             const closeReportModal = document.getElementById('closeReportModal');
             const reportPoleForm = document.getElementById('reportPoleForm');
             const reportStatusMessage = document.getElementById('reportStatusMessage');
+            const problemTypeInput = document.getElementById('problemType');
+            const urgencyInput = document.getElementById('urgency');
+            const poleNumberInput = document.getElementById('poleNumber');
+            const foundAtInput = document.getElementById('foundAt');
+            const reportStatusInput = document.getElementById('reportStatus');
+            const latitudeInput = document.getElementById('latitude');
+            const longitudeInput = document.getElementById('longitude');
+            const getReportLocationBtn = document.getElementById('getReportLocationBtn');
+            const openReportMapBtn = document.getElementById('openReportMapBtn');
+            const reportLocationStatus = document.getElementById('reportLocationStatus');
+            const reportImagesInput = document.getElementById('reportImages');
+            const googleDriveUploadUrl = 'https://script.google.com/macros/s/AKfycbz3K3g5MjYw3dOR55prVwVtzw0z-DtkWu8W0NOJW_x7hh_NvBeUbg5twZWGE9TYJvbX/exec';
             
             // This object holds your Google Drive file links
             const driveLinks = [
@@ -1248,26 +1383,84 @@
                 });
             };
             
-            // This function now exclusively uses data from the Firebase snapshot
-            const renderNews = (newsItems) => {
+            const newsReadStorageKey = 'egatMapReadNews';
+            const newsNotificationStorageKey = 'egatMapNewsNotificationEnabled';
+            let currentNews = [];
+            let newsInitialized = false;
+
+            const readNewsIds = () => {
+                try {
+                    const ids = JSON.parse(localStorage.getItem(newsReadStorageKey) || '[]');
+                    return Array.isArray(ids) ? ids : [];
+                } catch (error) {
+                    return [];
+                }
+            };
+            const getNewsDate = item => {
+                if (item.publishedAt?.toDate) return item.publishedAt.toDate();
+                if (item.createdAt?.toDate) return item.createdAt.toDate();
+                if (item.date) return new Date(item.date);
+                return new Date(0);
+            };
+            const isNewsNew = item => {
+                const date = getNewsDate(item);
+                const ageInDays = (Date.now() - date.getTime()) / 86400000;
+                return date.getTime() > 0 && ageInDays >= 0 && ageInDays <= 7;
+            };
+            const isNewsExpired = item => {
+                if (!item.expiresAt && !item.expiryDate) return false;
+                const expiry = item.expiresAt?.toDate ? item.expiresAt.toDate() : new Date(item.expiryDate || item.expiresAt);
+                return Number.isFinite(expiry.getTime()) && expiry.getTime() < Date.now();
+            };
+            const renderNews = (newsItems = currentNews) => {
+                currentNews = newsItems;
+                const readIds = readNewsIds();
+                const searchTerm = normalizeSearchText(newsSearchInput.value);
+                const category = normalizeSearchText(newsCategoryFilter.value);
+                const visibleNews = newsItems.filter(item => item.published !== false && !isNewsExpired(item));
+                const categories = [...new Set(visibleNews.map(item => item.category).filter(Boolean))].sort();
+                const selectedCategory = newsCategoryFilter.value;
+                newsCategoryFilter.innerHTML = '<option value="">ทุกประเภทข่าว</option>';
+                categories.forEach(value => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = value;
+                    newsCategoryFilter.appendChild(option);
+                });
+                newsCategoryFilter.value = categories.includes(selectedCategory) ? selectedCategory : '';
+
+                const filteredNews = visibleNews
+                    .filter(item => !searchTerm || normalizeSearchText(`${item.title} ${item.content} ${item.category || ''}`).includes(searchTerm))
+                    .filter(item => !category || normalizeSearchText(item.category) === category)
+                    .sort((first, second) => Number(Boolean(second.pinned)) - Number(Boolean(first.pinned)) || getNewsDate(second) - getNewsDate(first));
+                const unreadCount = visibleNews.filter(item => !readIds.includes(item.id)).length;
+                newsUnreadCount.textContent = unreadCount ? `ยังไม่ได้อ่าน ${unreadCount} ข่าว` : 'อ่านครบแล้ว';
                 newsContent.innerHTML = '';
-                if (newsItems.length === 0) {
-                    newsContent.innerHTML = `<p class="text-center text-gray-400 mt-4">ไม่มีข่าวสารในขณะนี้</p>`;
+                if (filteredNews.length === 0) {
+                    newsContent.innerHTML = `<p class="text-center text-gray-400 mt-4">ไม่พบข่าวสารที่ตรงกับเงื่อนไข</p>`;
                     return;
                 }
-                newsItems.forEach(item => {
+                filteredNews.forEach(item => {
+                    const newsDate = getNewsDate(item);
                     const newsItemDiv = document.createElement('div');
-                    newsItemDiv.className = `p-4 rounded-lg shadow-inner transition-colors duration-500 text-left ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`;
+                    newsItemDiv.className = `p-4 rounded-lg shadow-inner transition-colors duration-500 text-left ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} ${readIds.includes(item.id) ? '' : 'border-l-4 border-yellow-400'}`;
                     newsItemDiv.innerHTML = `
-                        <p class="font-semibold text-${isDarkMode ? 'gray-200' : 'blue-400'} transition-colors duration-500">${item.title}</p>
-                        <p>${item.content}</p>
-                        <div class="flex justify-between items-center mt-2">
-                            <button data-link="${item.link}" class="summarize-btn inline-block px-4 py-2 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition-colors">
-                                ✨ สรุปข่าว
-                            </button>
-                            <a href="${item.link}" target="_blank" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">
-                                ดูเพิ่มเติม
-                            </a>
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.title || 'รูปข่าว'}" class="w-full max-h-64 object-cover rounded-lg mb-3" loading="lazy">` : ''}
+                        <div class="flex flex-wrap items-center gap-2">
+                            <p class="font-semibold text-${isDarkMode ? 'gray-200' : 'blue-400'}">${item.title || '-'}</p>
+                            ${isNewsNew(item) ? '<span class="px-2 py-1 text-xs bg-red-500 text-white rounded-full">ใหม่</span>' : ''}
+                            ${item.pinned ? '<span class="px-2 py-1 text-xs bg-yellow-500 text-white rounded-full">ปักหมุด</span>' : ''}
+                            ${item.category ? `<span class="px-2 py-1 text-xs bg-indigo-500 text-white rounded-full">${item.category}</span>` : ''}
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">${newsDate.getTime() ? newsDate.toLocaleDateString('th-TH') : 'ไม่ระบุวันที่'}</p>
+                        ${item.author ? `<p class="text-xs text-gray-400 mt-1">ผู้เขียน: ${item.author}</p>` : ''}
+                        <p class="mt-2">${item.content || ''}</p>
+                        <div class="flex flex-wrap justify-between items-center gap-2 mt-3">
+                            <div class="flex flex-wrap gap-2">
+                                ${item.link ? `<button data-link="${item.link}" class="summarize-btn px-3 py-2 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition-colors">✨ สรุปข่าว</button>` : ''}
+                                ${item.link ? `<a href="${item.link}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-colors">ดูเพิ่มเติม</a>` : ''}
+                            </div>
+                            <button data-news-read="${item.id}" class="px-3 py-2 ${readIds.includes(item.id) ? 'bg-gray-500' : 'bg-green-600'} text-white rounded-lg hover:bg-green-700 transition-colors">${readIds.includes(item.id) ? 'อ่านแล้ว' : 'ทำเครื่องหมายว่าอ่านแล้ว'}</button>
                         </div>
                     `;
                     newsContent.appendChild(newsItemDiv);
@@ -1277,16 +1470,32 @@
             // This function now exclusively uses data from the Firebase snapshot
             const renderAdminNewsList = (newsItems) => {
                 newsListContainer.innerHTML = '';
-                if (newsItems.length === 0) {
+                const searchTerm = normalizeSearchText(adminNewsSearch.value);
+                const sortMode = adminNewsSort.value;
+                const filteredItems = newsItems
+                    .filter(item => !searchTerm || normalizeSearchText(`${item.title} ${item.content} ${item.category || ''} ${item.author || ''}`).includes(searchTerm))
+                    .sort((first, second) => {
+                        if (sortMode === 'oldest') return getNewsDate(first) - getNewsDate(second);
+                        if (sortMode === 'pinned') return Number(Boolean(second.pinned)) - Number(Boolean(first.pinned)) || getNewsDate(second) - getNewsDate(first);
+                        if (sortMode === 'title') return String(first.title || '').localeCompare(String(second.title || ''), 'th');
+                        return Number(Boolean(second.pinned)) - Number(Boolean(first.pinned)) || getNewsDate(second) - getNewsDate(first);
+                    });
+                if (filteredItems.length === 0) {
                     newsListContainer.innerHTML = `<p class="text-center text-gray-400 mt-4">ไม่มีข่าวสารในขณะนี้</p>`;
                     return;
                 }
-                newsItems.forEach(item => {
+                filteredItems.forEach(item => {
                     const newsItemDiv = document.createElement('div');
                     newsItemDiv.className = `p-4 rounded-lg shadow-inner ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`;
                     newsItemDiv.innerHTML = `
-                        <p class="font-bold text-gray-100">${item.title}</p>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <p class="font-bold text-gray-100">${item.title || '-'}</p>
+                            <span class="px-2 py-1 text-xs ${item.published === false ? 'bg-gray-500' : 'bg-green-600'} text-white rounded-full">${item.published === false ? 'ซ่อน' : 'เผยแพร่'}</span>
+                            ${item.pinned ? '<span class="px-2 py-1 text-xs bg-yellow-500 text-white rounded-full">ปักหมุด</span>' : ''}
+                        </div>
                         <p class="text-gray-300 mt-1">${item.content}</p>
+                        <p class="text-xs text-gray-400 mt-2">ประเภท: ${item.category || '-'} | ผู้เขียน: ${item.author || '-'} | วันที่: ${getNewsDate(item).getTime() ? getNewsDate(item).toLocaleDateString('th-TH') : '-'}</p>
+                        ${isNewsExpired(item) ? '<p class="text-xs text-red-400 mt-1">ข่าวหมดอายุแล้ว</p>' : ''}
                         <div class="mt-2 flex space-x-2 justify-end">
                             <button data-id="${item.id}" class="edit-btn px-4 py-2 bg-yellow-500 text-white rounded-lg">แก้ไข</button>
                             <button data-id="${item.id}" class="delete-btn px-4 py-2 bg-red-500 text-white rounded-lg">ลบ</button>
@@ -1306,7 +1515,39 @@
                     if (auth.currentUser) {
                         renderAdminNewsList(news);
                     }
+                    const newest = news.slice().sort((a, b) => getNewsDate(b) - getNewsDate(a))[0];
+                    const notificationSupported = 'Notification' in window;
+                    if (newsInitialized && newest && isNewsNew(newest) && notificationSupported && localStorage.getItem(newsNotificationStorageKey) === 'true' && Notification.permission === 'granted') {
+                        const lastNotified = localStorage.getItem('egatMapLastNotifiedNews');
+                        if (lastNotified !== newest.id) {
+                            new Notification('มีข่าวใหม่จากแผนที่นำทางสายส่ง', { body: newest.title || 'มีข่าวใหม่' });
+                            localStorage.setItem('egatMapLastNotifiedNews', newest.id);
+                        }
+                    }
+                    newsInitialized = true;
                 });
+            };
+
+            const showAdminFeedback = (message, type = 'success') => {
+                const feedback = document.createElement('div');
+                feedback.className = 'fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-[300]';
+                const panel = document.createElement('div');
+                panel.className = 'bg-gray-800 rounded-xl shadow-2xl p-6 w-11/12 max-w-sm text-center';
+                const title = document.createElement('h5');
+                title.className = `text-xl font-bold ${type === 'success' ? 'text-green-400' : 'text-red-400'}`;
+                title.textContent = type === 'success' ? 'บันทึกสำเร็จ' : 'บันทึกไม่สำเร็จ';
+                const text = document.createElement('p');
+                text.className = 'text-gray-200 mt-3';
+                text.textContent = message;
+                const close = document.createElement('button');
+                close.type = 'button';
+                close.className = 'mt-5 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700';
+                close.textContent = 'ตกลง';
+                close.addEventListener('click', () => feedback.remove());
+                panel.append(title, text, close);
+                feedback.appendChild(panel);
+                document.body.appendChild(feedback);
+                setTimeout(() => feedback.remove(), 5000);
             };
 
             const saveNews = async (e) => {
@@ -1315,14 +1556,54 @@
                 const title = newsTitleInput.value;
                 const content = newsTextInput.value;
                 const link = newsLinkInput.value;
-                const newsItem = { title, content, link };
+                const category = newsCategoryInput.value.trim();
+                const author = newsAuthorInput.value.trim();
+                const imageUrl = newsImageUrlInput.value.trim();
+                const pinned = newsPinnedInput.checked;
+                const published = newsPublishedInput.checked;
 
-                if (id) {
-                    await db.collection("news").doc(id).update(newsItem);
-                } else {
-                    await db.collection("news").add(newsItem);
+                try {
+                    if (id) {
+                        // แก้ไขด้วย update เฉพาะฟิลด์ที่มีข้อมูล เพื่อรักษาฟิลด์เดิมใน Firestore
+                        const updates = { updatedAt: firebase.firestore.FieldValue.serverTimestamp(), pinned, published };
+                        const updateIfNotEmpty = (field, value) => {
+                            if (value !== '') updates[field] = value;
+                        };
+                        updateIfNotEmpty('title', title.trim());
+                        updateIfNotEmpty('content', content.trim());
+                        updateIfNotEmpty('link', link.trim());
+                        updateIfNotEmpty('category', category);
+                        updateIfNotEmpty('author', author);
+                        updateIfNotEmpty('imageUrl', imageUrl);
+                        if (newsDateInput.value) {
+                            updates.publishedAt = firebase.firestore.Timestamp.fromDate(new Date(`${newsDateInput.value}T00:00:00`));
+                        }
+                        if (newsExpiryInput.value) {
+                            updates.expiresAt = firebase.firestore.Timestamp.fromDate(new Date(`${newsExpiryInput.value}T23:59:59`));
+                        }
+                        await db.collection("news").doc(id).update(updates);
+                    } else {
+                        const newsItem = {
+                            title: title.trim(),
+                            content: content.trim(),
+                            link: link.trim(),
+                            category,
+                            author,
+                            imageUrl,
+                            pinned,
+                            published,
+                            publishedAt: newsDateInput.value ? firebase.firestore.Timestamp.fromDate(new Date(`${newsDateInput.value}T00:00:00`)) : firebase.firestore.FieldValue.serverTimestamp(),
+                            expiresAt: newsExpiryInput.value ? firebase.firestore.Timestamp.fromDate(new Date(`${newsExpiryInput.value}T23:59:59`)) : null,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        };
+                        await db.collection("news").add(newsItem);
+                    }
+                    showAdminFeedback(id ? 'แก้ไขข่าวและบันทึกข้อมูลเรียบร้อยแล้ว' : 'เพิ่มข่าวและบันทึกข้อมูลเรียบร้อยแล้ว');
+                    newsForm.reset();
+                } catch (error) {
+                    console.error('บันทึกข่าวไม่สำเร็จ:', error);
+                    showAdminFeedback('ไม่สามารถบันทึกข่าวได้ กรุณาตรวจสอบการเชื่อมต่อหรือสิทธิ์ Firebase', 'error');
                 }
-                newsForm.reset();
             };
 
             const editNews = async (id) => {
@@ -1333,6 +1614,13 @@
                     newsTitleInput.value = item.title;
                     newsTextInput.value = item.content;
                     newsLinkInput.value = item.link;
+                    newsCategoryInput.value = item.category || '';
+                    newsDateInput.value = item.publishedAt?.toDate ? item.publishedAt.toDate().toISOString().slice(0, 10) : (item.date || '');
+                    newsAuthorInput.value = item.author || '';
+                    newsImageUrlInput.value = item.imageUrl || '';
+                    newsPinnedInput.checked = Boolean(item.pinned);
+                    newsPublishedInput.checked = item.published !== false;
+                    newsExpiryInput.value = item.expiresAt?.toDate ? item.expiresAt.toDate().toISOString().slice(0, 10) : (item.expiryDate || '');
                 }
             };
 
@@ -1363,7 +1651,7 @@
                 newsForm.addEventListener('submit', saveNews);
                 newsListContainer.addEventListener('click', (e) => {
                     if (e.target.classList.contains('edit-btn')) {
-                        editNews(e.target.dataset.id);
+                        if (window.confirm('ต้องการแก้ไขข่าวนี้ใช่หรือไม่?')) editNews(e.target.dataset.id);
                     } else if (e.target.classList.contains('delete-btn')) {
                         deleteNews(e.target.dataset.id);
                     }
@@ -1766,6 +2054,33 @@
                     const link = e.target.dataset.link;
                     window.summarizeNews(link);
                 }
+                const readButton = e.target.closest('[data-news-read]');
+                if (readButton) {
+                    const readIds = readNewsIds();
+                    if (!readIds.includes(readButton.dataset.newsRead)) {
+                        readIds.unshift(readButton.dataset.newsRead);
+                        localStorage.setItem(newsReadStorageKey, JSON.stringify(readIds.slice(0, 200)));
+                        renderNews();
+                    }
+                }
+            });
+
+            newsSearchInput.addEventListener('input', () => renderNews());
+            newsCategoryFilter.addEventListener('change', () => renderNews());
+            adminNewsSearch.addEventListener('input', () => renderAdminNewsList(currentNews));
+            adminNewsSort.addEventListener('change', () => renderAdminNewsList(currentNews));
+            enableNewsNotificationsBtn.addEventListener('click', async () => {
+                if (!('Notification' in window)) {
+                    enableNewsNotificationsBtn.textContent = 'เบราว์เซอร์ไม่รองรับ';
+                    return;
+                }
+                const permission = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+                if (permission === 'granted') {
+                    localStorage.setItem(newsNotificationStorageKey, 'true');
+                    enableNewsNotificationsBtn.textContent = 'เปิดแจ้งเตือนแล้ว';
+                } else {
+                    enableNewsNotificationsBtn.textContent = 'ไม่ได้รับอนุญาตแจ้งเตือน';
+                }
             });
 
             adminLoginBtn.addEventListener('click', () => {
@@ -1896,16 +2211,106 @@
             // --- Replace this with your Discord Webhook URL for reports ---
             const reportWebhookUrl = 'https://discordapp.com/api/webhooks/1414440893959639203/ApILou8WhKYI5eNfqUdlwKPqiyR3L8Zil__9K9BwgPFX1MGHCmcJpjKspaf8vYFMVeGp'; // **Change this URL**
 
+            const problemTypeInput = document.getElementById('problemType');
+            const urgencyInput = document.getElementById('urgency');
+            const poleNumberInput = document.getElementById('poleNumber');
+            const foundAtInput = document.getElementById('foundAt');
+            const reportStatusInput = document.getElementById('reportStatus');
+            const latitudeInput = document.getElementById('latitude');
+            const longitudeInput = document.getElementById('longitude');
+            const getReportLocationBtn = document.getElementById('getReportLocationBtn');
+            const openReportMapBtn = document.getElementById('openReportMapBtn');
+            const reportLocationStatus = document.getElementById('reportLocationStatus');
+            const reportImagesInput = document.getElementById('reportImages');
+            const googleDriveUploadUrl = 'https://script.google.com/macros/s/AKfycbz3K3g5MjYw3dOR55prVwVtzw0z-DtkWu8W0NOJW_x7hh_NvBeUbg5twZWGE9TYJvbX/exec';
+
+            const setReportLocation = (latitude, longitude) => {
+                latitudeInput.value = Number(latitude).toFixed(6);
+                longitudeInput.value = Number(longitude).toFixed(6);
+                document.getElementById('googleMapLink').value = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                reportLocationStatus.textContent = `พิกัด: ${latitudeInput.value}, ${longitudeInput.value}`;
+            };
+
+            const compressReportImage = file => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const image = new Image();
+                    image.onload = () => {
+                        const maxSide = 1280;
+                        const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(image.width * scale));
+                        canvas.height = Math.max(1, Math.round(image.height * scale));
+                        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+                        resolve({ dataUrl: canvas.toDataURL('image/jpeg', 0.72), name: file.name.replace(/\.[^.]+$/, '') + '.jpg' });
+                    };
+                    image.onerror = reject;
+                    image.src = reader.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+
+            const uploadReportImage = async (image, index) => {
+                const compressed = await compressReportImage(image);
+                const response = await fetch(googleDriveUploadUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        base64: compressed.dataUrl,
+                        mimeType: 'image/jpeg',
+                        fileName: `report-${Date.now()}-${index + 1}-${compressed.name}`
+                    })
+                });
+                if (!response.ok) throw new Error(`อัปโหลดรูปที่ ${index + 1} ไม่สำเร็จ`);
+                const result = await response.json();
+                if (!result.ok) throw new Error(result.error || `อัปโหลดรูปที่ ${index + 1} ไม่สำเร็จ`);
+                return result;
+            };
+
             // Show the modal when the button is clicked
             reportButton.addEventListener('click', () => {
                 reportPoleModal.classList.remove('hidden');
                 reportStatusMessage.classList.add('hidden');
                 reportStatusMessage.textContent = '';
+                if (!foundAtInput.value) {
+                    const now = new Date();
+                    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                    foundAtInput.value = now.toISOString().slice(0, 16);
+                }
             });
 
             // Hide the modal when the close button is clicked
             closeReportModal.addEventListener('click', () => {
                 reportPoleModal.classList.add('hidden');
+            });
+
+            getReportLocationBtn.addEventListener('click', () => {
+                if (!navigator.geolocation) {
+                    reportLocationStatus.textContent = 'เบราว์เซอร์ไม่รองรับ GPS';
+                    return;
+                }
+                getReportLocationBtn.disabled = true;
+                getReportLocationBtn.textContent = 'กำลังดึงพิกัด...';
+                navigator.geolocation.getCurrentPosition(position => {
+                    setReportLocation(position.coords.latitude, position.coords.longitude);
+                    getReportLocationBtn.disabled = false;
+                    getReportLocationBtn.textContent = 'อัปเดตพิกัด GPS';
+                }, () => {
+                    reportLocationStatus.textContent = 'ไม่สามารถดึงพิกัดได้ กรุณาอนุญาตการเข้าถึงตำแหน่ง';
+                    getReportLocationBtn.disabled = false;
+                    getReportLocationBtn.textContent = 'ดึงพิกัด GPS ปัจจุบัน';
+                }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+            });
+
+            openReportMapBtn.addEventListener('click', () => {
+                const latitude = Number(latitudeInput.value);
+                const longitude = Number(longitudeInput.value);
+                if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+                    window.open(`https://www.google.com/maps?q=${latitude},${longitude}`, '_blank', 'noopener');
+                } else {
+                    reportLocationStatus.textContent = 'กรุณาดึงหรือกรอกพิกัด GPS ก่อน';
+                }
             });
 
             // Handle form submission
@@ -1922,37 +2327,42 @@
                 const otherInfo = document.getElementById('otherInfo').value.trim();
                 const reporterName = document.getElementById('reporterName').value.trim();
                 const reporterUnit = document.getElementById('reporterUnit').value.trim();
-
-                const payload = {
-                    content: '🚨 **รายงานข้อมูลเสาไฟฟ้าใหม่!**',
-                    embeds: [
-                        {
-                            title: `${reportType}`,
-                            description: `**ผู้แจ้ง:** ${reporterName}\n**หน่วยงาน:** ${reporterUnit}`,
-                            color: 16776960, // Yellow color
-                            fields: [
-                                {
-                                    name: 'แนวสาย',
-                                    value: lineName,
-                                    inline: false
-                                },
-                                {
-                                    name: 'ลิงก์ Google Maps',
-                                    value: googleMapLink,
-                                    inline: false
-                                },
-                                {
-                                    name: 'รายละเอียดอื่นๆ',
-                                    value: otherInfo || 'ไม่ได้ระบุ',
-                                    inline: false
-                                }
-                            ],
-                            timestamp: new Date().toISOString(),
-                        }
-                    ]
-                };
+                const problemType = problemTypeInput.value;
+                const urgency = urgencyInput.value;
+                const poleNumber = poleNumberInput.value.trim();
+                const foundAt = foundAtInput.value;
+                const reportStatus = reportStatusInput.value;
+                const latitude = latitudeInput.value;
+                const longitude = longitudeInput.value;
+                const images = [...reportImagesInput.files].slice(0, 3);
 
                 try {
+                    let uploadedImages = [];
+                    if (images.length) {
+                        reportStatusMessage.textContent = 'กำลังบีบและอัปโหลดรูปภาพ...';
+                        uploadedImages = await Promise.all(images.map(uploadReportImage));
+                    }
+                    const imageLinks = uploadedImages.map(image => image.viewUrl);
+                    const coordinates = latitude && longitude ? `${latitude}, ${longitude}` : 'ไม่ได้ระบุ';
+                    const payload = {
+                        content: '🚨 **รายงานปัญหาเสาไฟฟ้าใหม่!**',
+                        embeds: [{
+                            title: `${problemType} | ${urgency}`,
+                            description: `**ผู้แจ้ง:** ${reporterName}\n**หน่วยงาน:** ${reporterUnit}\n**สถานะ:** ${reportStatus}`,
+                            color: urgency === 'ฉุกเฉิน' ? 15158332 : 16776960,
+                            fields: [
+                                { name: 'ประเภทการรายงาน', value: reportType || 'ไม่ได้ระบุ', inline: true },
+                                { name: 'แนวสาย', value: lineName || 'ไม่ได้ระบุ', inline: true },
+                                { name: 'เลขเสา', value: poleNumber || 'ไม่ได้ระบุ', inline: true },
+                                { name: 'วันที่พบปัญหา', value: foundAt || 'ไม่ได้ระบุ', inline: true },
+                                { name: 'พิกัด GPS', value: coordinates, inline: true },
+                                { name: 'Google Maps', value: googleMapLink || 'ไม่ได้ระบุ', inline: false },
+                                { name: 'รูปภาพใน Google Drive', value: imageLinks.length ? imageLinks.join('\n') : 'ไม่มีรูปแนบ', inline: false },
+                                { name: 'รายละเอียดอื่นๆ', value: otherInfo || 'ไม่ได้ระบุ', inline: false }
+                            ],
+                            timestamp: new Date().toISOString()
+                        }]
+                    };
                     const response = await fetch(reportWebhookUrl, {
                         method: 'POST',
                         headers: {
