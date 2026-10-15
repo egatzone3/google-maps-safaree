@@ -1,4 +1,4 @@
-const CACHE_NAME = 'egat-map-cache-v1';
+const CACHE_NAME = 'egat-map-cache-v2';
 const urlsToCache = [
   './',
   './index.html'
