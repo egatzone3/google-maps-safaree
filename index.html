@@ -405,13 +405,13 @@
         </div>
         
         <!-- Admin Modal for News Management -->
-        <div id="adminModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50 flex items-center justify-center">
-            <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-11/12 md:w-3/4 max-w-2xl overflow-y-auto max-h-[90vh]">
-                <div class="flex justify-between items-center mb-4 sticky top-0 bg-gray-800">
-                    <h4 class="text-xl font-bold text-gray-100">จัดการข่าวสาร</h4>
-                    <button id="closeAdminModalBtn" class="text-gray-400 hover:text-gray-100">&times;</button>
+        <div id="adminModal" class="hidden fixed inset-0 bg-gray-900 z-50 overflow-y-auto">
+            <div class="min-h-full bg-gray-800 p-4 md:p-8 w-full max-w-6xl mx-auto shadow-2xl">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-6 border-b border-gray-700 pb-4">
+                    <h4 class="text-2xl font-bold text-orange-300">เมนูแอดมิน</h4>
+                    <button id="closeAdminModalBtn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500">กลับหน้าหลัก</button>
                 </div>
-                <div id="adminContent">
+                <div id="adminContent" class="flex flex-col">
                     <form id="newsForm" class="space-y-4">
                         <input type="hidden" id="newsId">
                         <div>
@@ -474,6 +474,25 @@
                     </div>
                     <div id="newsList" class="mt-4 space-y-4">
                         <!-- News items for admin will be populated here -->
+                    </div>
+
+                    <div id="adminReportsSection" class="order-first mt-0 mb-10 border-b border-gray-600 pb-6">
+                        <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                            <div>
+                                <h5 class="text-lg font-bold text-orange-400">จัดการรายงานปัญหาเสาไฟฟ้า</h5>
+                                <p id="reportsSummary" class="text-xs text-gray-400 mt-1">กำลังโหลดรายงาน...</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <input id="adminReportSearch" type="search" placeholder="ค้นหารายงาน..." class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400">
+                                <select id="adminReportStatusFilter" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white">
+                                    <option value="">ทุกสถานะ</option>
+                                    <option value="รอตรวจสอบ">รอตรวจสอบ</option>
+                                    <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
+                                    <option value="เสร็จแล้ว">เสร็จแล้ว</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="adminReportsList" class="space-y-3"></div>
                     </div>
 
                     <!-- Admin-only usage history -->
@@ -944,6 +963,11 @@
                     renderDashboard(data);
                 }
             };
+            const setAdminView = showAdmin => {
+                mainViewSections.forEach(section => section.classList.toggle('hidden', showAdmin));
+                dashboardSection.classList.add('hidden');
+                adminModal.classList.toggle('hidden', !showAdmin);
+            };
             const themeToggle = document.getElementById('themeToggle');
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
@@ -979,6 +1003,12 @@
             const newsExpiryInput = document.getElementById('newsExpiry');
             const adminNewsSearch = document.getElementById('adminNewsSearch');
             const adminNewsSort = document.getElementById('adminNewsSort');
+            const adminReportsList = document.getElementById('adminReportsList');
+            const adminReportSearch = document.getElementById('adminReportSearch');
+            const adminReportStatusFilter = document.getElementById('adminReportStatusFilter');
+            const reportsSummary = document.getElementById('reportsSummary');
+            let adminReports = [];
+            let reportsUnsubscribe = null;
             const cancelEditBtn = document.getElementById('cancelEditBtn');
             const adminHistoryList = document.getElementById('adminHistoryList');
             const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -1286,7 +1316,7 @@
             };
 
             closeAdminModalBtn.addEventListener('click', () => {
-                adminModal.classList.add('hidden');
+                setAdminView(false);
             });
             
             closeLoginModalBtn.addEventListener('click', () => {
@@ -1647,6 +1677,83 @@
                 });
             };
 
+            const renderAdminReports = () => {
+                const searchTerm = normalizeSearchText(adminReportSearch.value);
+                const status = adminReportStatusFilter.value;
+                const filtered = adminReports.filter(report => {
+                    const searchable = normalizeSearchText(`${report.problemType || ''} ${report.poleNumber || ''} ${report.lineName || ''} ${report.reporterName || ''} ${report.reporterUnit || ''}`);
+                    return (!searchTerm || searchable.includes(searchTerm)) && (!status || report.status === status);
+                });
+                reportsSummary.textContent = `ทั้งหมด ${adminReports.length} รายงาน | แสดง ${filtered.length} รายงาน`;
+                adminReportsList.innerHTML = '';
+                if (!filtered.length) {
+                    adminReportsList.innerHTML = '<p class="text-center text-gray-400">ไม่พบรายงาน</p>';
+                    return;
+                }
+                filtered.forEach(report => {
+                    const row = document.createElement('div');
+                    row.className = 'p-4 rounded-lg bg-gray-700 shadow-inner';
+                    const links = Array.isArray(report.imageUrls) ? report.imageUrls : [];
+                    row.innerHTML = `
+                        <div class="flex flex-wrap justify-between gap-2">
+                            <div>
+                                <p class="font-bold text-orange-300">${report.problemType || 'ไม่ระบุประเภท'} | เสา ${report.poleNumber || '-'}</p>
+                                <p class="text-sm text-gray-300 mt-1">${report.lineName || '-'} | ${report.urgency || 'ปกติ'} | ผู้แจ้ง: ${report.reporterName || '-'}</p>
+                                <p class="text-xs text-gray-400 mt-1">${report.latitude && report.longitude ? `พิกัด ${report.latitude}, ${report.longitude}` : 'ไม่มีพิกัด'} | ${report.reporterUnit || '-'}</p>
+                            </div>
+                            <select data-report-status="${report.id}" class="report-status-select px-2 py-1 bg-gray-800 text-white rounded border border-gray-600">
+                                ${['รอตรวจสอบ', 'กำลังดำเนินการ', 'เสร็จแล้ว'].map(value => `<option value="${value}" ${report.status === value ? 'selected' : ''}>${value}</option>`).join('')}
+                            </select>
+                        </div>
+                        <p class="text-sm text-gray-300 mt-2">${report.otherInfo || 'ไม่มีรายละเอียดเพิ่มเติม'}</p>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            ${report.googleMapLink ? `<a href="${report.googleMapLink}" target="_blank" rel="noopener noreferrer" class="px-3 py-1 bg-green-600 text-white rounded">เปิด Google Maps</a>` : ''}
+                            ${links.map((url, index) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="px-3 py-1 bg-blue-600 text-white rounded">ดูรูป ${index + 1}</a>`).join('')}
+                            <button type="button" data-delete-report="${report.id}" class="delete-report-btn px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">ลบรายงาน</button>
+                        </div>
+                    `;
+                    adminReportsList.appendChild(row);
+                });
+            };
+
+            const loadAdminReports = () => {
+                if (reportsUnsubscribe) reportsUnsubscribe();
+                reportsUnsubscribe = db.collection('reports').onSnapshot(snapshot => {
+                    adminReports = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    adminReports.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+                    renderAdminReports();
+                }, error => {
+                    console.error('โหลดรายงานไม่สำเร็จ:', error);
+                    reportsSummary.textContent = 'ไม่สามารถโหลดรายงานได้';
+                });
+            };
+
+            const updateReportStatus = async (id, status) => {
+                if (!window.confirm(`ยืนยันเปลี่ยนสถานะเป็น “${status}” ใช่หรือไม่?`)) {
+                    renderAdminReports();
+                    return;
+                }
+                try {
+                    await db.collection('reports').doc(id).update({ status, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                } catch (error) {
+                    console.error('เปลี่ยนสถานะรายงานไม่สำเร็จ:', error);
+                    window.alert('ไม่สามารถเปลี่ยนสถานะรายงานได้');
+                    renderAdminReports();
+                }
+            };
+
+            const deleteReport = async id => {
+                const report = adminReports.find(item => item.id === id);
+                const reportLabel = report ? `${report.problemType || 'รายงาน'} เลขเสา ${report.poleNumber || '-'}` : 'รายการนี้';
+                if (!window.confirm(`ยืนยันลบ ${reportLabel} ใช่หรือไม่?\nการลบข้อมูลรายงานจะไม่สามารถย้อนกลับได้`)) return;
+                try {
+                    await db.collection('reports').doc(id).delete();
+                } catch (error) {
+                    console.error('ลบรายงานไม่สำเร็จ:', error);
+                    window.alert('ไม่สามารถลบรายงานได้ กรุณาตรวจสอบ Firestore Rules');
+                }
+            };
+
             const setupAdminListeners = () => {
                 newsForm.addEventListener('submit', saveNews);
                 newsListContainer.addEventListener('click', (e) => {
@@ -1657,9 +1764,21 @@
                     }
                 });
                 cancelEditBtn.addEventListener('click', () => newsForm.reset());
-                manageNewsBtn.addEventListener('click', () => adminModal.classList.remove('hidden'));
+                manageNewsBtn.addEventListener('click', () => setAdminView(true));
                 manageNewsBtn.addEventListener('click', renderAdminHistory);
                 clearHistoryBtn.onclick = clearAdminHistory;
+                adminReportSearch.addEventListener('input', renderAdminReports);
+                adminReportStatusFilter.addEventListener('change', renderAdminReports);
+                adminReportsList.addEventListener('change', event => {
+                    if (event.target.classList.contains('report-status-select')) {
+                        updateReportStatus(event.target.dataset.reportStatus, event.target.value);
+                    }
+                });
+                adminReportsList.addEventListener('click', event => {
+                    const deleteButton = event.target.closest('[data-delete-report]');
+                    if (deleteButton) deleteReport(deleteButton.dataset.deleteReport);
+                });
+                loadAdminReports();
             };
             
             const renderMapButtons = () => {
@@ -2344,6 +2463,26 @@
                     }
                     const imageLinks = uploadedImages.map(image => image.viewUrl);
                     const coordinates = latitude && longitude ? `${latitude}, ${longitude}` : 'ไม่ได้ระบุ';
+                    const reportRecord = {
+                        reportType,
+                        problemType,
+                        urgency,
+                        poleNumber,
+                        lineName,
+                        googleMapLink,
+                        otherInfo,
+                        reporterName,
+                        reporterUnit,
+                        foundAt,
+                        status: reportStatus,
+                        latitude: latitude ? Number(latitude) : null,
+                        longitude: longitude ? Number(longitude) : null,
+                        imageUrls: imageLinks,
+                        imageFileIds: uploadedImages.map(image => image.fileId),
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    await firebase.firestore().collection('reports').add(reportRecord);
                     const payload = {
                         content: '🚨 **รายงานปัญหาเสาไฟฟ้าใหม่!**',
                         embeds: [{
