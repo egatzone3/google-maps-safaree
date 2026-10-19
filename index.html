@@ -50,9 +50,9 @@
     </button>
 
     <!-- แถบข้อความวิ่งแจ้งการอัปเดต -->
-    <section id="announcementBar" class="egat-announcement-bar fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-blue-900 via-indigo-800 to-cyan-900 text-white border-t border-blue-400/40 shadow-2xl" aria-label="ประกาศการอัปเดต">
+    <section id="announcementBar" class="egat-announcement-bar fixed bottom-0 left-0 right-0 z-40 min-h-[52px] bg-gradient-to-r from-blue-900 via-indigo-800 to-cyan-900 text-white border-t border-blue-400/40 shadow-2xl" aria-label="ข่าวสารข้อความวิ่ง">
         <div class="max-w-7xl mx-auto flex items-center gap-2 px-3 py-2">
-            <span class="shrink-0 px-2 py-1 rounded-md bg-yellow-400 text-blue-950 font-bold text-sm">📢 <span id="announcementLabel">อัปเดต</span></span>
+            <span class="shrink-0 px-2 py-1 rounded-md bg-yellow-400 text-blue-950 font-bold text-sm">📢 <span id="announcementLabel">ข่าวสาร</span></span>
             <div class="egat-announcement-track flex-1 text-sm md:text-base" aria-live="polite">
                 <span id="announcementText" class="egat-announcement-text">กำลังโหลดประกาศอัปเดต...</span>
             </div>
@@ -293,7 +293,7 @@
                 <button id="combinedMapBtn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     <span data-i18n="overallMap">แผนที่รวม</span>
                 </button>
-                <button id="calendarBtn" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
+                <button id="calendarBtn" class="hidden bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     <span data-i18n="workCalendar">ปฏิทินงาน</span>
                 </button>
                 <button id="favoritesBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
@@ -1309,9 +1309,6 @@
                 }
                 if (/แดชบอร์ด|dashboard|สถิติ/.test(normalized)) {
                     setDashboardView(true); setVoiceStatus(`เปิด Dashboard: ${command}`); return;
-                }
-                if (/ปฏิทิน|calendar/.test(normalized)) {
-                    setCalendarView(true); setVoiceStatus(`เปิดปฏิทินงาน: ${command}`); return;
                 }
                 if (/รายการโปรด|ของโปรด|favorite/.test(normalized)) {
                     favoritesBtn.click(); setVoiceStatus(`เปิดรายการโปรด: ${command}`); return;
