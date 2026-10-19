@@ -18,11 +18,12 @@
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
-        .egat-announcement-track { overflow: hidden; white-space: nowrap; }
-        .egat-announcement-text { display: inline-block; padding-left: 100%; animation: egatAnnouncementScroll 28s linear infinite; }
+        .egat-announcement-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: block; }
+        .egat-announcement-track { overflow: hidden; white-space: nowrap; min-width: 0; }
+        .egat-announcement-text { display: inline-block; padding-left: 100%; animation: egatAnnouncementScroll 28s linear infinite; -webkit-animation: egatAnnouncementScroll 28s linear infinite; will-change: transform; }
         .egat-announcement-bar:hover .egat-announcement-text,
         .egat-announcement-bar:focus-within .egat-announcement-text { animation-play-state: paused; }
-        @media (prefers-reduced-motion: reduce) { .egat-announcement-text { animation: none; padding-left: 0; } }
+        @media (prefers-reduced-motion: reduce) { .egat-announcement-text { animation: none; -webkit-animation: none; padding-left: 0; } }
         .egat-speed-item { position: relative; overflow: hidden; color: #fff; min-height: 64px; display: flex; align-items: center; padding: 8px 18px 8px 28px; clip-path: polygon(9% 0, 100% 0, 91% 100%, 0 100%); }
         .egat-speed-item::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,.08); transform: skewX(-12deg) translateX(-115%); transition: transform .35s ease; }
         .egat-speed-item:hover::after { transform: skewX(-12deg) translateX(115%); }
@@ -2039,6 +2040,8 @@
             let adminPopupItems = [];
             let adminPopupIndex = 0;
             let adminPopupUnsubscribe = null;
+            const adminPopupCooldownKey = 'egatMapAdminPopupCooldownUntil';
+            const adminPopupCooldownMs = 5 * 60 * 1000;
             const announcementDismissKey = 'egatMapAnnouncementDismissed';
             const getAnnouncementItems = newsItems => newsItems
                 .filter(item => item.published !== false && !isNewsExpired(item))
@@ -2050,10 +2053,14 @@
                 const content = String(announcement.content || '').replace(/\s+/g, ' ').trim();
                 const shortContent = content.length > 260 ? `${content.slice(0, 260)}...` : content;
                 announcementText.style.animation = 'none';
+                announcementText.style.webkitAnimation = 'none';
+                announcementText.style.paddingLeft = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? '0' : '100%';
                 void announcementText.offsetWidth;
                 announcementText.textContent = `${announcement.pinned ? 'ข่าวสำคัญ: ' : ''}${title || 'มีการอัปเดตข้อมูลในระบบ'}${shortContent ? ` — ${shortContent}` : ''}`;
                 announcementText.style.animation = '';
+                announcementText.style.webkitAnimation = '';
                 announcementText.style.animationPlayState = announcementPaused ? 'paused' : 'running';
+                announcementText.style.webkitAnimationPlayState = announcementPaused ? 'paused' : 'running';
             };
             const updateAnnouncementBar = newsItems => {
                 if (!announcementBar || !announcementText) return;
@@ -2061,7 +2068,11 @@
                 announcementIndex = 0;
                 if (announcementTimer) clearInterval(announcementTimer);
                 if (!announcementItems.length) {
-                    announcementBar.classList.add('hidden');
+                    announcementText.textContent = 'กำลังโหลดข่าวสาร หรือยังไม่มีข่าวสารที่เผยแพร่';
+                    announcementText.style.animation = 'none';
+                    announcementText.style.webkitAnimation = 'none';
+                    announcementText.style.paddingLeft = '0';
+                    announcementBar.classList.remove('hidden');
                     return;
                 }
                 showAnnouncementItem();
@@ -2091,6 +2102,14 @@
                 if (!adminPopupNotice) return;
                 if (adminPopupTimer) clearTimeout(adminPopupTimer);
                 const now = new Date();
+                const cooldownUntil = Number(localStorage.getItem(adminPopupCooldownKey) || 0);
+                if (cooldownUntil > Date.now()) {
+                    activeAdminPopupId = null;
+                    adminPopupNotice.classList.add('hidden');
+                    adminPopupTimer = setTimeout(() => updateAdminPopup(), cooldownUntil - Date.now() + 50);
+                    return;
+                }
+                if (cooldownUntil) localStorage.removeItem(adminPopupCooldownKey);
                 const activePopups = adminPopupItems.filter(item => {
                     if (item.enabled === false) return false;
                     const start = getPopupDate(item.popupStartAt);
@@ -2112,7 +2131,10 @@
                 adminPopupTimer = setTimeout(() => updateAdminPopup(), 8000);
             };
             adminPopupCloseBtn?.addEventListener('click', () => {
+                localStorage.setItem(adminPopupCooldownKey, String(Date.now() + adminPopupCooldownMs));
+                if (adminPopupTimer) clearTimeout(adminPopupTimer);
                 adminPopupNotice?.classList.add('hidden');
+                adminPopupTimer = setTimeout(() => updateAdminPopup(), adminPopupCooldownMs + 50);
             });
 
             const readNewsIds = () => {
@@ -2263,6 +2285,8 @@
                     window.updateConnectionStatus('success', `โหลดข้อมูลสำเร็จ (${news.length} ข่าว)`);
                 }, error => {
                     console.error('โหลดข่าวไม่สำเร็จ:', error);
+                    // Keep the ticker visible on mobile browsers even when Firebase is slow/offline.
+                    updateAnnouncementBar([]);
                     window.updateConnectionStatus(navigator.onLine ? 'error' : 'offline', navigator.onLine ? 'ไม่สามารถโหลดข่าวได้' : 'อยู่ในโหมดออฟไลน์');
                 });
             };
