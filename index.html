@@ -293,6 +293,9 @@
                 <button id="combinedMapBtn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     <span data-i18n="overallMap">แผนที่รวม</span>
                 </button>
+                <button id="calendarBtn" class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
+                    <span data-i18n="workCalendar">ปฏิทินงาน</span>
+                </button>
                 <button id="favoritesBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
                     ⭐ <span data-i18n="favorites">รายการโปรด</span>
                 </button>
@@ -444,6 +447,21 @@
             <div class="relative w-full overflow-hidden rounded-lg shadow-inner" style="padding-top: 75%;">
                 <iframe id="combinedMap" src="https://www.google.com/maps/d/embed?mid=1uYtpMx56qOjf0RLk5m-wJYQJmkEWW42w&ehbc=2E312F" title="แผนที่นำทาง" class="absolute top-0 left-0 w-full h-full" allowfullscreen="" loading="lazy"></iframe>
             </div>
+        </section>
+
+        <!-- Work Calendar Section -->
+        <section id="calendarSection" class="hidden mt-12 bg-gray-800 rounded-xl shadow-2xl p-4 md:p-6 transition-colors duration-500">
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-100" data-i18n="workCalendar">ปฏิทินงาน</h3>
+                    <p class="text-sm text-gray-400 mt-1">Google Calendar | Asia/Bangkok</p>
+                </div>
+                <button type="button" id="closeCalendarBtn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors"><span data-i18n="backHome">กลับหน้าหลัก</span></button>
+            </div>
+            <div class="w-full overflow-hidden rounded-xl bg-white shadow-inner" style="height: min(75vh, 760px); min-height: 520px;">
+                <iframe id="workCalendarIframe" src="https://calendar.google.com/calendar/embed?src=iqhufm8ntnmce5ot47l5lnqr9c%40group.calendar.google.com&ctz=Asia%2FBangkok" style="border:0" width="100%" height="100%" frameborder="0" scrolling="no" title="ปฏิทินงาน Google Calendar"></iframe>
+            </div>
+            <p class="text-xs text-gray-500 mt-3">หากปฏิทินหรือรายละเอียดกิจกรรมถูกจำกัดสิทธิ์ ผู้ใช้งานอาจต้องเข้าสู่ระบบ Gmail ตามสิทธิ์ของปฏิทิน</p>
         </section>
 
         <!-- News Section -->
@@ -1230,6 +1248,9 @@
             const combinedMapBtn = document.getElementById('combinedMapBtn');
             const closeCombinedMapBtn = document.getElementById('closeCombinedMapBtn');
             const mapSection = document.getElementById('mapSection');
+            const calendarBtn = document.getElementById('calendarBtn');
+            const calendarSection = document.getElementById('calendarSection');
+            const closeCalendarBtn = document.getElementById('closeCalendarBtn');
             const favoritesBtn = document.getElementById('favoritesBtn');
             const recentBtn = document.getElementById('recentBtn');
             const refreshPageBtn = document.getElementById('refreshPageBtn');
@@ -1250,6 +1271,7 @@
             const setDashboardView = showDashboard => {
                 mainViewSections.forEach(section => section.classList.toggle('hidden', showDashboard));
                 mapSection?.classList.add('hidden');
+                calendarSection?.classList.add('hidden');
                 dashboardSection.classList.toggle('hidden', !showDashboard);
                 dashboardBtn.textContent = showDashboard ? (currentLanguage === 'en' ? 'Back to Home' : 'กลับหน้าหลัก') : 'Dashboard';
                 if (showDashboard) {
@@ -1259,6 +1281,7 @@
             const setCombinedMapView = showMap => {
                 mainViewSections.forEach(section => section.classList.toggle('hidden', showMap));
                 dashboardSection.classList.add('hidden');
+                calendarSection?.classList.add('hidden');
                 mapSection?.classList.toggle('hidden', !showMap);
                 if (showMap) {
                     window.recordUsageHistory?.('map', 'หน้าแผนที่รวม', 'เปิดหน้าแผนที่รวมแยกต่างหาก');
@@ -1266,6 +1289,13 @@
                 } else {
                     combinedMapBtn.textContent = currentLanguage === 'en' ? 'Overall Map' : 'แผนที่รวม';
                 }
+            };
+            const setCalendarView = showCalendar => {
+                mainViewSections.forEach(section => section.classList.toggle('hidden', showCalendar));
+                dashboardSection.classList.add('hidden');
+                mapSection?.classList.add('hidden');
+                calendarSection?.classList.toggle('hidden', !showCalendar);
+                if (showCalendar) window.recordUsageHistory?.('calendar', 'ปฏิทินงาน', 'เปิดหน้าปฏิทินงาน Google Calendar');
             };
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             let voiceRecognition = null;
@@ -1279,6 +1309,9 @@
                 }
                 if (/แดชบอร์ด|dashboard|สถิติ/.test(normalized)) {
                     setDashboardView(true); setVoiceStatus(`เปิด Dashboard: ${command}`); return;
+                }
+                if (/ปฏิทิน|calendar/.test(normalized)) {
+                    setCalendarView(true); setVoiceStatus(`เปิดปฏิทินงาน: ${command}`); return;
                 }
                 if (/รายการโปรด|ของโปรด|favorite/.test(normalized)) {
                     favoritesBtn.click(); setVoiceStatus(`เปิดรายการโปรด: ${command}`); return;
@@ -1323,6 +1356,7 @@
                 mainViewSections.forEach(section => section.classList.toggle('hidden', showAdmin));
                 dashboardSection.classList.add('hidden');
                 mapSection?.classList.add('hidden');
+                calendarSection?.classList.add('hidden');
                 adminModal.classList.toggle('hidden', !showAdmin);
             };
             const themeToggle = document.getElementById('themeToggle');
@@ -1471,10 +1505,10 @@
             const languageToggleBtn = document.getElementById('languageToggleBtn');
             const translations = {
                 th: {
-                    visitors: 'ผู้เข้าใช้งาน', adminMenu: 'เมนูแอดมิน', adminLogin: 'ผู้ดูแล', drive: 'ไดรฟ์', dashboard: 'Dashboard', overallMap: 'แผนที่รวม', favorites: 'รายการโปรด', recent: 'รายการล่าสุด', refresh: 'รีเฟรช', checkingConnection: 'กำลังตรวจสอบการเชื่อมต่อ...', lastUpdatedChecking: 'ข้อมูลล่าสุด: กำลังตรวจสอบ...', searchPlaceholder: 'ค้นหาข้อมูล...', newsSearchPlaceholder: 'ค้นหาข่าว...', enableNewsNotifications: 'เปิดแจ้งเตือนข่าว', voiceExamples: 'ตัวอย่างคำสั่งที่ใช้ได้', voiceSearchYala: 'ค้นหาหน่วยงานยะลา', voiceOverallMap: 'เปิดแผนที่รวม', voiceDashboard: 'เปิด Dashboard', voiceNearby: 'แสดงหน่วยงานใกล้ฉัน', dashboardSummary: 'Dashboard สรุปสถิติ', allStatistics: 'สถิติข้อมูลทั้งหมด', backHome: 'กลับหน้าหลัก', lineLengthByUnit: 'ความยาวสายแยกตามหน่วยงาน', towersByUnit: 'จำนวนเสาแยกตามหน่วยงาน', personnelByUnit: 'จำนวนบุคลากรแยกตามหน่วยงาน', voltageDistribution: 'สัดส่วนแนวสายตามระดับแรงดัน', newsBoard: 'กระดานข่าว'
+                    visitors: 'ผู้เข้าใช้งาน', adminMenu: 'เมนูแอดมิน', adminLogin: 'ผู้ดูแล', drive: 'ไดรฟ์', dashboard: 'Dashboard', overallMap: 'แผนที่รวม', workCalendar: 'ปฏิทินงาน', favorites: 'รายการโปรด', recent: 'รายการล่าสุด', refresh: 'รีเฟรช', checkingConnection: 'กำลังตรวจสอบการเชื่อมต่อ...', lastUpdatedChecking: 'ข้อมูลล่าสุด: กำลังตรวจสอบ...', searchPlaceholder: 'ค้นหาข้อมูล...', newsSearchPlaceholder: 'ค้นหาข่าว...', enableNewsNotifications: 'เปิดแจ้งเตือนข่าว', voiceExamples: 'ตัวอย่างคำสั่งที่ใช้ได้', voiceSearchYala: 'ค้นหาหน่วยงานยะลา', voiceOverallMap: 'เปิดแผนที่รวม', voiceDashboard: 'เปิด Dashboard', voiceNearby: 'แสดงหน่วยงานใกล้ฉัน', dashboardSummary: 'Dashboard สรุปสถิติ', allStatistics: 'สถิติข้อมูลทั้งหมด', backHome: 'กลับหน้าหลัก', lineLengthByUnit: 'ความยาวสายแยกตามหน่วยงาน', towersByUnit: 'จำนวนเสาแยกตามหน่วยงาน', personnelByUnit: 'จำนวนบุคลากรแยกตามหน่วยงาน', voltageDistribution: 'สัดส่วนแนวสายตามระดับแรงดัน', newsBoard: 'กระดานข่าว'
                 },
                 en: {
-                    visitors: 'Visitors', adminMenu: 'Admin Menu', adminLogin: 'Admin Login', drive: 'Drive', dashboard: 'Dashboard', overallMap: 'Overall Map', favorites: 'Favorites', recent: 'Recent', refresh: 'Refresh', checkingConnection: 'Checking connection...', lastUpdatedChecking: 'Last updated: checking...', searchPlaceholder: 'Search...', newsSearchPlaceholder: 'Search news...', enableNewsNotifications: 'Enable news notifications', voiceExamples: 'Voice command examples', voiceSearchYala: 'Search Yala unit', voiceOverallMap: 'Open overall map', voiceDashboard: 'Open Dashboard', voiceNearby: 'Show nearby units', dashboardSummary: 'Statistics Dashboard', allStatistics: 'All statistics', backHome: 'Back to Home', lineLengthByUnit: 'Line length by unit', towersByUnit: 'Towers by unit', personnelByUnit: 'Personnel by unit', voltageDistribution: 'Line distribution by voltage', newsBoard: 'News Board'
+                    visitors: 'Visitors', adminMenu: 'Admin Menu', adminLogin: 'Admin Login', drive: 'Drive', dashboard: 'Dashboard', overallMap: 'Overall Map', workCalendar: 'Work Calendar', favorites: 'Favorites', recent: 'Recent', refresh: 'Refresh', checkingConnection: 'Checking connection...', lastUpdatedChecking: 'Last updated: checking...', searchPlaceholder: 'Search...', newsSearchPlaceholder: 'Search news...', enableNewsNotifications: 'Enable news notifications', voiceExamples: 'Voice command examples', voiceSearchYala: 'Search Yala unit', voiceOverallMap: 'Open overall map', voiceDashboard: 'Open Dashboard', voiceNearby: 'Show nearby units', dashboardSummary: 'Statistics Dashboard', allStatistics: 'All statistics', backHome: 'Back to Home', lineLengthByUnit: 'Line length by unit', towersByUnit: 'Towers by unit', personnelByUnit: 'Personnel by unit', voltageDistribution: 'Line distribution by voltage', newsBoard: 'News Board'
                 }
             };
             const applyTranslations = () => {
@@ -2033,7 +2067,10 @@
                     return;
                 }
                 showAnnouncementItem();
-                announcementBar.classList.toggle('hidden', sessionStorage.getItem(announcementDismissKey) === 'true');
+                // Always show the ticker when published news is available.
+                // Do not inherit a stale dismiss flag from an earlier deployment.
+                sessionStorage.removeItem(announcementDismissKey);
+                announcementBar.classList.remove('hidden');
                 if (announcementItems.length > 1) {
                     announcementTimer = setInterval(() => {
                         if (announcementPaused) return;
@@ -2048,7 +2085,7 @@
                 announcementPauseBtn.textContent = announcementPaused ? 'เล่น' : 'หยุด';
             });
             announcementCloseBtn?.addEventListener('click', () => {
-                sessionStorage.setItem(announcementDismissKey, 'true');
+                sessionStorage.removeItem(announcementDismissKey);
                 announcementBar?.classList.add('hidden');
             });
             const getPopupDate = value => value?.toDate ? value.toDate() : (value ? new Date(value) : null);
@@ -2062,7 +2099,7 @@
                     const end = getPopupDate(item.popupEndAt);
                     return (!start || Number.isNaN(start.getTime()) || now >= start) && (!end || Number.isNaN(end.getTime()) || now <= end);
                 }).sort((first, second) => getPopupDate(second.updatedAt) - getPopupDate(first.updatedAt))[0];
-                if (!popup || sessionStorage.getItem(`egatMapPopupClosed:${popup.id}`) === 'true') {
+                if (!popup) {
                     activeAdminPopupId = null;
                     adminPopupNotice.classList.add('hidden');
                     return;
@@ -2075,7 +2112,6 @@
                 if (popupEnd && popupEnd > now) adminPopupTimer = setTimeout(() => updateAdminPopup(), popupEnd.getTime() - now.getTime() + 1000);
             };
             adminPopupCloseBtn?.addEventListener('click', () => {
-                if (activeAdminPopupId) sessionStorage.setItem(`egatMapPopupClosed:${activeAdminPopupId}`, 'true');
                 adminPopupNotice?.classList.add('hidden');
             });
 
@@ -3045,6 +3081,8 @@
             closeDashboardBtn.addEventListener('click', () => setDashboardView(false));
             combinedMapBtn.addEventListener('click', () => setCombinedMapView(mapSection.classList.contains('hidden')));
             closeCombinedMapBtn.addEventListener('click', () => setCombinedMapView(false));
+            calendarBtn.addEventListener('click', () => setCalendarView(calendarSection.classList.contains('hidden')));
+            closeCalendarBtn.addEventListener('click', () => setCalendarView(false));
             
             themeToggle.addEventListener('click', () => {
                 isDarkMode = !isDarkMode;
