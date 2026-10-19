@@ -221,7 +221,7 @@
             <!-- บรรทัดที่ 3: ผู้เข้าใช้งานและปุ่มมืด/สว่าง -->
             <div class="w-full mt-4 flex items-center justify-center gap-4">
                 <div class="text-sm text-center min-w-[70px]">
-                    <h3 class="font-bold text-blue-400 transition-colors duration-500">ผู้เข้าใช้งาน</h3>
+                    <h3 class="font-bold text-blue-400 transition-colors duration-500" data-i18n="visitors">ผู้เข้าใช้งาน</h3>
                     <p id="visitorCounter" class="text-xl font-extrabold text-green-400">0</p>
                 </div>
                 <button id="themeToggle" class="p-3 rounded-full bg-gray-800 text-yellow-400 shadow-lg hover:scale-110 transition-transform" title="เปลี่ยนโหมดมืด/สว่าง">
@@ -232,30 +232,34 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
                 </button>
+                <button id="languageToggleBtn" class="px-3 py-2 rounded-lg bg-gray-700 text-white font-bold shadow-md hover:bg-gray-600 transition-colors" title="เปลี่ยนภาษา">EN</button>
                 <button id="manageNewsBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md hidden transition-colors">
-                    เมนูแอดมิน
+                    <span data-i18n="adminMenu">เมนูแอดมิน</span>
                 </button>
             </div>
 
             <!-- บรรทัดที่ 4: ปุ่มการทำงานต่าง ๆ -->
             <div class="w-full mt-4 flex flex-wrap items-center justify-center gap-3">
                 <button id="adminLoginBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
-                    ผู้ดูแล
+                    <span data-i18n="adminLogin">ผู้ดูแล</span>
                 </button>
                 <button id="driveLinkButton" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
-                    ไดรฟ์
+                    <span data-i18n="drive">ไดรฟ์</span>
                 </button>
                 <button id="dashboardBtn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
-                    Dashboard
+                    <span data-i18n="dashboard">Dashboard</span>
+                </button>
+                <button id="combinedMapBtn" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
+                    <span data-i18n="overallMap">แผนที่รวม</span>
                 </button>
                 <button id="favoritesBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
-                    ⭐ รายการโปรด
+                    ⭐ <span data-i18n="favorites">รายการโปรด</span>
                 </button>
                 <button id="recentBtn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors">
-                    รายการล่าสุด
+                    <span data-i18n="recent">รายการล่าสุด</span>
                 </button>
                 <button id="refreshPageBtn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors" title="รีเฟรชหน้าเว็บ หรือกด Ctrl+F5 บน PC">
-                    รีเฟรช
+                    <span data-i18n="refresh">รีเฟรช</span>
                 </button>
             </div>
         </header>
@@ -265,18 +269,35 @@
             <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <div class="flex items-center gap-2">
                     <span id="connectionStatusDot" class="inline-block w-3 h-3 rounded-full bg-yellow-400"></span>
-                    <span id="connectionStatusText" class="text-gray-200">กำลังตรวจสอบการเชื่อมต่อ...</span>
+                    <span id="connectionStatusText" class="text-gray-200" data-i18n="checkingConnection">กำลังตรวจสอบการเชื่อมต่อ...</span>
                 </div>
-                <span id="connectionLastUpdated" class="text-xs text-gray-400">ข้อมูลล่าสุด: กำลังตรวจสอบ...</span>
+                <span id="connectionLastUpdated" class="text-xs text-gray-400" data-i18n="lastUpdatedChecking">ข้อมูลล่าสุด: กำลังตรวจสอบ...</span>
             </div>
         </section>
 
         <!-- Search Bar -->
-        <div id="searchSection" class="mb-10 relative">
-            <input type="text" id="searchInput" placeholder="ค้นหาข้อมูล..." class="w-full px-5 py-4 pl-12 bg-gray-800 text-gray-100 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6 transition-colors duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+        <div id="searchSection" class="mb-10 relative bg-gray-800 rounded-xl shadow-xl p-4 md:p-5 transition-colors duration-500">
+            <div class="relative">
+                <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="ค้นหาข้อมูล..." class="w-full px-5 py-4 pl-12 bg-gray-700 text-gray-100 rounded-xl shadow-inner border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6 transition-colors duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+                <button type="button" id="voiceCommandBtn" class="px-5 py-2.5 bg-pink-600 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 active:scale-95 transition-all" title="พูดคำสั่ง เช่น ค้นหาหน่วยงานยะลา หรือเปิดแผนที่รวม">
+                    🎤 พูดคำสั่ง
+                </button>
+                <span id="voiceCommandStatus" class="text-sm text-gray-400" aria-live="polite">กดปุ่มแล้วพูดคำสั่งได้เลย</span>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-700">
+                    <p class="text-xs text-gray-400 mb-2" data-i18n="voiceExamples">ตัวอย่างคำสั่งที่ใช้ได้</p>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" data-i18n="voiceSearchYala" data-voice-example="ค้นหาหน่วยงานยะลา" class="px-3 py-1.5 text-xs bg-gray-700 text-gray-200 rounded-full border border-gray-600 hover:bg-blue-600 hover:border-blue-500 transition-colors">ค้นหาหน่วยงานยะลา</button>
+                    <button type="button" data-i18n="voiceOverallMap" data-voice-example="เปิดแผนที่รวม" class="px-3 py-1.5 text-xs bg-gray-700 text-gray-200 rounded-full border border-gray-600 hover:bg-cyan-600 hover:border-cyan-500 transition-colors">เปิดแผนที่รวม</button>
+                    <button type="button" data-i18n="voiceDashboard" data-voice-example="เปิด Dashboard" class="px-3 py-1.5 text-xs bg-gray-700 text-gray-200 rounded-full border border-gray-600 hover:bg-teal-600 hover:border-teal-500 transition-colors">เปิด Dashboard</button>
+                    <button type="button" data-i18n="voiceNearby" data-voice-example="แสดงหน่วยงานใกล้ฉัน" class="px-3 py-1.5 text-xs bg-gray-700 text-gray-200 rounded-full border border-gray-600 hover:bg-green-600 hover:border-green-500 transition-colors">แสดงหน่วยงานใกล้ฉัน</button>
+                </div>
+            </div>
         </div>
 
         <!-- Current Location Tools -->
@@ -330,11 +351,11 @@
         <section id="dashboardSection" class="mb-10 bg-gray-800 rounded-xl shadow-2xl p-5 transition-colors duration-500 hidden">
             <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
                 <div>
-                    <h3 class="text-2xl font-bold text-green-300">Dashboard สรุปสถิติ</h3>
-                    <p id="dashboardScope" class="text-sm text-gray-400 mt-1">สถิติข้อมูลทั้งหมด</p>
+                    <h3 class="text-2xl font-bold text-green-300" data-i18n="dashboardSummary">Dashboard สรุปสถิติ</h3>
+                    <p id="dashboardScope" class="text-sm text-gray-400 mt-1" data-i18n="allStatistics">สถิติข้อมูลทั้งหมด</p>
                 </div>
                 <button type="button" id="closeDashboardBtn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors">
-                    กลับหน้าหลัก
+                    <span data-i18n="backHome">กลับหน้าหลัก</span>
                 </button>
             </div>
             <div id="dashboardContent" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -342,19 +363,19 @@
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6">
                 <div class="bg-gray-700 rounded-xl p-4 shadow-lg">
-                    <h4 class="text-lg font-bold text-white mb-3">ความยาวสายแยกตามหน่วยงาน</h4>
+                    <h4 class="text-lg font-bold text-white mb-3" data-i18n="lineLengthByUnit">ความยาวสายแยกตามหน่วยงาน</h4>
                     <div class="relative h-72"><canvas id="lineLengthChart"></canvas></div>
                 </div>
                 <div class="bg-gray-700 rounded-xl p-4 shadow-lg">
-                    <h4 class="text-lg font-bold text-white mb-3">จำนวนเสาแยกตามหน่วยงาน</h4>
+                    <h4 class="text-lg font-bold text-white mb-3" data-i18n="towersByUnit">จำนวนเสาแยกตามหน่วยงาน</h4>
                     <div class="relative h-72"><canvas id="towerChart"></canvas></div>
                 </div>
                 <div class="bg-gray-700 rounded-xl p-4 shadow-lg">
-                    <h4 class="text-lg font-bold text-white mb-3">จำนวนบุคลากรแยกตามหน่วยงาน</h4>
+                    <h4 class="text-lg font-bold text-white mb-3" data-i18n="personnelByUnit">จำนวนบุคลากรแยกตามหน่วยงาน</h4>
                     <div class="relative h-72"><canvas id="personnelChart"></canvas></div>
                 </div>
                 <div class="bg-gray-700 rounded-xl p-4 shadow-lg">
-                    <h4 class="text-lg font-bold text-white mb-3">สัดส่วนแนวสายตามระดับแรงดัน</h4>
+                    <h4 class="text-lg font-bold text-white mb-3" data-i18n="voltageDistribution">สัดส่วนแนวสายตามระดับแรงดัน</h4>
                     <div class="relative h-72"><canvas id="voltageChart"></canvas></div>
                 </div>
             </div>
@@ -371,8 +392,9 @@
         </main>
 
         <!-- Embedded Map Section -->
-        <section id="mapSection" class="mt-12 bg-gray-800 rounded-xl shadow-2xl p-6 transition-colors duration-500">
-            <h3 class="text-2xl font-bold text-gray-100 mb-4 transition-colors duration-500">แผนที่รวม</h3>
+        <section id="mapSection" class="hidden mt-12 bg-gray-800 rounded-xl shadow-2xl p-6 transition-colors duration-500">
+            <h3 class="text-2xl font-bold text-gray-100 mb-4 transition-colors duration-500" data-i18n="overallMap">แผนที่รวม</h3>
+            <button type="button" id="closeCombinedMapBtn" class="mb-4 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors"><span data-i18n="backHome">กลับหน้าหลัก</span></button>
             
             <div id="mapButtons" class="mb-4 flex flex-wrap justify-center gap-2">
                 <!-- Map buttons will be populated here by JavaScript -->
@@ -386,14 +408,14 @@
         <!-- News Section -->
         <section id="newsSection" class="mt-12 bg-gray-800 rounded-xl shadow-2xl p-6 transition-colors duration-500">
             <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
-                <h3 class="text-2xl font-bold text-gray-100 transition-colors duration-500">กระดานข่าว</h3>
+                <h3 class="text-2xl font-bold text-gray-100 transition-colors duration-500" data-i18n="newsBoard">กระดานข่าว</h3>
                 <div class="flex items-center gap-2">
                     <span id="newsUnreadCount" class="text-sm text-yellow-300"></span>
-                    <button id="enableNewsNotificationsBtn" type="button" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">เปิดแจ้งเตือนข่าว</button>
+                    <button id="enableNewsNotificationsBtn" type="button" data-i18n="enableNewsNotifications" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">เปิดแจ้งเตือนข่าว</button>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
-                <input id="newsSearchInput" type="search" placeholder="ค้นหาข่าว..." class="px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input id="newsSearchInput" type="search" data-i18n-placeholder="newsSearchPlaceholder" placeholder="ค้นหาข่าว..." class="px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <select id="newsCategoryFilter" class="px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">ทุกประเภทข่าว</option>
                 </select>
@@ -463,6 +485,12 @@
                         <div>
                             <label for="newsImageUrl" class="block text-sm font-medium text-gray-400">URL รูปภาพข่าว</label>
                             <input type="url" id="newsImageUrl" placeholder="https://..." class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">สามารถใช้ URL รูปภาพเดิม หรือเลือกอัปโหลดรูปจากเครื่องด้านล่าง</p>
+                        </div>
+                        <div>
+                            <label for="newsImageFile" class="block text-sm font-medium text-gray-400">อัปโหลดรูปภาพข่าว</label>
+                            <input type="file" id="newsImageFile" accept="image/jpeg,image/png,image/webp" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white file:mr-3 file:rounded file:border-0 file:bg-blue-600 file:px-3 file:py-1 file:text-white">
+                            <p id="newsImageUploadStatus" class="text-xs text-gray-500 mt-1">รูปจะถูกย่อและบีบอัดก่อนเก็บใน Google Drive</p>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <label class="flex items-center gap-2 text-sm text-gray-300">
@@ -542,13 +570,42 @@
                                 <h5 class="text-lg font-bold text-yellow-400">ประวัติการเปิดดูข้อมูล</h5>
                                 <p class="text-xs text-gray-400 mt-1">แสดงเฉพาะผู้ดูแลและจัดเก็บร่วมกันใน Firebase Firestore</p>
                             </div>
-                            <button type="button" id="clearHistoryBtn" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                                ล้างประวัติ
-                            </button>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" id="exportHistoryCsvBtn" class="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">ส่งออก CSV</button>
+                                <button type="button" id="exportHistoryJsonBtn" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">ส่งออก JSON</button>
+                                <button type="button" id="printHistoryBtn" class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition-colors">พิมพ์</button>
+                                <button type="button" id="deleteSelectedHistoryBtn" class="px-3 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 transition-colors">ลบที่เลือก</button>
+                                <button type="button" id="deleteHistoryDateRangeBtn" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">ลบตามช่วงวันที่</button>
+                                <button type="button" id="clearHistoryBtn" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">ล้างทั้งหมด</button>
+                            </div>
                         </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 mb-3">
+                            <input id="adminHistorySearch" type="search" placeholder="ค้นหาชื่อ รายละเอียด อีเมล หรือ IP..." class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400">
+                            <select id="adminHistoryTypeFilter" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white">
+                                <option value="">ทุกประเภทกิจกรรม</option>
+                                <option value="visitor">ผู้เข้าใช้งาน</option>
+                                <option value="unit">หน่วยงาน</option>
+                                <option value="line">แนวสาย/แผนที่</option>
+                                <option value="map">แผนที่รวม</option>
+                                <option value="report">รายงานล่าสุด</option>
+                            </select>
+                            <input id="adminHistoryFromDate" type="date" title="วันที่เริ่มต้น" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white">
+                            <input id="adminHistoryToDate" type="date" title="วันที่สิ้นสุด" class="px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white">
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 mb-4 text-xs text-gray-400">
+                            <span>แสดง</span>
+                            <select id="adminHistoryPageSize" class="px-2 py-1 bg-gray-700 border border-gray-600 rounded text-white">
+                                <option value="20">20 รายการ</option><option value="50">50 รายการ</option><option value="100">100 รายการ</option>
+                            </select>
+                            <span id="adminHistoryFilterSummary"></span>
+                        </div>
+                        <div id="adminHistoryStats" class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4"></div>
+                        <div class="bg-gray-800/60 rounded-lg p-3 mb-4"><canvas id="adminHistoryChart" height="110"></canvas></div>
+                        <div class="flex items-center gap-2 mb-3 text-sm text-gray-400"><input type="checkbox" id="selectAllHistory" class="accent-yellow-400"> <label for="selectAllHistory">เลือกทั้งหมดในผลลัพธ์ปัจจุบัน</label><span id="selectedHistorySummary"></span></div>
                         <div id="adminHistoryList" class="space-y-3">
                             <!-- History items will be populated by JavaScript -->
                         </div>
+                        <div id="adminHistoryPagination" class="flex justify-center items-center gap-3 mt-4"></div>
                     </div>
                 </div>
             </div>
@@ -1003,6 +1060,8 @@
 
             const mainContent = document.getElementById('mainContent');
             const searchInput = document.getElementById('searchInput');
+            const voiceCommandBtn = document.getElementById('voiceCommandBtn');
+            const voiceCommandStatus = document.getElementById('voiceCommandStatus');
             const getLocationBtn = document.getElementById('getLocationBtn');
             const sortDistanceBtn = document.getElementById('sortDistanceBtn');
             const clearLocationBtn = document.getElementById('clearLocationBtn');
@@ -1021,6 +1080,9 @@
             const dashboardSection = document.getElementById('dashboardSection');
             const dashboardBtn = document.getElementById('dashboardBtn');
             const closeDashboardBtn = document.getElementById('closeDashboardBtn');
+            const combinedMapBtn = document.getElementById('combinedMapBtn');
+            const closeCombinedMapBtn = document.getElementById('closeCombinedMapBtn');
+            const mapSection = document.getElementById('mapSection');
             const favoritesBtn = document.getElementById('favoritesBtn');
             const recentBtn = document.getElementById('recentBtn');
             const refreshPageBtn = document.getElementById('refreshPageBtn');
@@ -1040,15 +1102,80 @@
 
             const setDashboardView = showDashboard => {
                 mainViewSections.forEach(section => section.classList.toggle('hidden', showDashboard));
+                mapSection?.classList.add('hidden');
                 dashboardSection.classList.toggle('hidden', !showDashboard);
-                dashboardBtn.textContent = showDashboard ? 'กลับหน้าหลัก' : 'Dashboard';
+                dashboardBtn.textContent = showDashboard ? (currentLanguage === 'en' ? 'Back to Home' : 'กลับหน้าหลัก') : 'Dashboard';
                 if (showDashboard) {
                     renderDashboard(data);
                 }
             };
+            const setCombinedMapView = showMap => {
+                mainViewSections.forEach(section => section.classList.toggle('hidden', showMap));
+                dashboardSection.classList.add('hidden');
+                mapSection?.classList.toggle('hidden', !showMap);
+                if (showMap) {
+                    window.recordUsageHistory?.('map', 'หน้าแผนที่รวม', 'เปิดหน้าแผนที่รวมแยกต่างหาก');
+                    combinedMapBtn.textContent = currentLanguage === 'en' ? 'Back to Home' : 'กลับหน้าหลัก';
+                } else {
+                    combinedMapBtn.textContent = currentLanguage === 'en' ? 'Overall Map' : 'แผนที่รวม';
+                }
+            };
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let voiceRecognition = null;
+            const setVoiceStatus = message => { if (voiceCommandStatus) voiceCommandStatus.textContent = message; };
+            const runVoiceCommand = rawText => {
+                const command = String(rawText || '').trim().replace(/\s+/g, ' ');
+                const normalized = command.toLowerCase();
+                if (!command) return setVoiceStatus('ไม่ได้ยินคำสั่ง กรุณาลองใหม่');
+                if (/แผนที่รวม|แผนที่ทั้งหมด|combined map/.test(normalized)) {
+                    setCombinedMapView(true); setVoiceStatus(`เปิดแผนที่รวม: ${command}`); return;
+                }
+                if (/แดชบอร์ด|dashboard|สถิติ/.test(normalized)) {
+                    setDashboardView(true); setVoiceStatus(`เปิด Dashboard: ${command}`); return;
+                }
+                if (/รายการโปรด|ของโปรด|favorite/.test(normalized)) {
+                    favoritesBtn.click(); setVoiceStatus(`เปิดรายการโปรด: ${command}`); return;
+                }
+                if (/รายการล่าสุด|ล่าสุด|recent/.test(normalized)) {
+                    recentBtn.click(); setVoiceStatus(`เปิดรายการล่าสุด: ${command}`); return;
+                }
+                if (/ใกล้ฉัน|ใกล้ที่สุด|ระยะทาง/.test(normalized)) {
+                    getLocationBtn.click(); setVoiceStatus(`ค้นหาหน่วยงานใกล้ฉัน: ${command}`); return;
+                }
+                const searchText = command.replace(/^(ค้นหา|ค้น|หา|search)\s*/i, '').trim() || command;
+                searchInput.value = searchText;
+                applyAdvancedFilters();
+                setVoiceStatus(`ค้นหา: ${searchText}`);
+            };
+            const startVoiceCommand = () => {
+                if (!SpeechRecognition) {
+                    setVoiceStatus('เบราว์เซอร์นี้ไม่รองรับเสียง กรุณาพิมพ์ค้นหา');
+                    return;
+                }
+                if (voiceRecognition) { voiceRecognition.stop(); return; }
+                voiceRecognition = new SpeechRecognition();
+                voiceRecognition.lang = 'th-TH';
+                voiceRecognition.continuous = false;
+                voiceRecognition.interimResults = false;
+                voiceRecognition.maxAlternatives = 1;
+                voiceRecognition.onstart = () => { voiceCommandBtn.classList.add('animate-pulse'); voiceCommandBtn.textContent = 'กำลังฟัง...'; setVoiceStatus('กรุณาพูดคำสั่ง'); };
+                voiceRecognition.onresult = event => runVoiceCommand(event.results[0][0].transcript);
+                voiceRecognition.onerror = event => { setVoiceStatus(event.error === 'not-allowed' ? 'ไม่ได้รับอนุญาตใช้ไมโครโฟน' : `รับเสียงไม่สำเร็จ: ${event.error}`); };
+                voiceRecognition.onend = () => { voiceRecognition = null; voiceCommandBtn.classList.remove('animate-pulse'); voiceCommandBtn.textContent = '🎤 พูดคำสั่ง'; };
+                try { voiceRecognition.start(); } catch (error) { voiceRecognition = null; setVoiceStatus('ไม่สามารถเริ่มรับเสียงได้'); }
+            };
+            voiceCommandBtn?.addEventListener('click', startVoiceCommand);
+            document.querySelectorAll('[data-voice-example]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const example = button.dataset.voiceExample || '';
+                    runVoiceCommand(example);
+                });
+            });
+            if (!SpeechRecognition && voiceCommandBtn) voiceCommandBtn.title = 'เบราว์เซอร์นี้ไม่รองรับคำสั่งเสียง กรุณาใช้ช่องค้นหา';
             const setAdminView = showAdmin => {
                 mainViewSections.forEach(section => section.classList.toggle('hidden', showAdmin));
                 dashboardSection.classList.add('hidden');
+                mapSection?.classList.add('hidden');
                 adminModal.classList.toggle('hidden', !showAdmin);
             };
             const themeToggle = document.getElementById('themeToggle');
@@ -1081,6 +1208,8 @@
             const newsDateInput = document.getElementById('newsDate');
             const newsAuthorInput = document.getElementById('newsAuthor');
             const newsImageUrlInput = document.getElementById('newsImageUrl');
+            const newsImageFileInput = document.getElementById('newsImageFile');
+            const newsImageUploadStatus = document.getElementById('newsImageUploadStatus');
             const newsPinnedInput = document.getElementById('newsPinned');
             const newsPublishedInput = document.getElementById('newsPublished');
             const newsExpiryInput = document.getElementById('newsExpiry');
@@ -1101,6 +1230,25 @@
             const cancelEditBtn = document.getElementById('cancelEditBtn');
             const adminHistoryList = document.getElementById('adminHistoryList');
             const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const adminHistorySearch = document.getElementById('adminHistorySearch');
+            const adminHistoryTypeFilter = document.getElementById('adminHistoryTypeFilter');
+            const adminHistoryFromDate = document.getElementById('adminHistoryFromDate');
+            const adminHistoryToDate = document.getElementById('adminHistoryToDate');
+            const adminHistoryPageSize = document.getElementById('adminHistoryPageSize');
+            const adminHistoryStats = document.getElementById('adminHistoryStats');
+            const adminHistoryFilterSummary = document.getElementById('adminHistoryFilterSummary');
+            const adminHistoryPagination = document.getElementById('adminHistoryPagination');
+            const adminHistoryChart = document.getElementById('adminHistoryChart');
+            const exportHistoryCsvBtn = document.getElementById('exportHistoryCsvBtn');
+            const exportHistoryJsonBtn = document.getElementById('exportHistoryJsonBtn');
+            const printHistoryBtn = document.getElementById('printHistoryBtn');
+            const deleteSelectedHistoryBtn = document.getElementById('deleteSelectedHistoryBtn');
+            const deleteHistoryDateRangeBtn = document.getElementById('deleteHistoryDateRangeBtn');
+            const selectAllHistory = document.getElementById('selectAllHistory');
+            const selectedHistorySummary = document.getElementById('selectedHistorySummary');
+            const selectedHistoryIds = new Set();
+            let adminHistoryPage = 1;
+            let adminHistoryChartInstance = null;
             const loginModal = document.getElementById('loginModal');
             const loginForm = document.getElementById('loginForm');
             const loginEmailInput = document.getElementById('loginEmail');
@@ -1156,6 +1304,37 @@
             ];
             
             let isDarkMode = true;
+            let currentLanguage = localStorage.getItem('egatMapLanguage') || 'th';
+            const languageToggleBtn = document.getElementById('languageToggleBtn');
+            const translations = {
+                th: {
+                    visitors: 'ผู้เข้าใช้งาน', adminMenu: 'เมนูแอดมิน', adminLogin: 'ผู้ดูแล', drive: 'ไดรฟ์', dashboard: 'Dashboard', overallMap: 'แผนที่รวม', favorites: 'รายการโปรด', recent: 'รายการล่าสุด', refresh: 'รีเฟรช', checkingConnection: 'กำลังตรวจสอบการเชื่อมต่อ...', lastUpdatedChecking: 'ข้อมูลล่าสุด: กำลังตรวจสอบ...', searchPlaceholder: 'ค้นหาข้อมูล...', newsSearchPlaceholder: 'ค้นหาข่าว...', enableNewsNotifications: 'เปิดแจ้งเตือนข่าว', voiceExamples: 'ตัวอย่างคำสั่งที่ใช้ได้', voiceSearchYala: 'ค้นหาหน่วยงานยะลา', voiceOverallMap: 'เปิดแผนที่รวม', voiceDashboard: 'เปิด Dashboard', voiceNearby: 'แสดงหน่วยงานใกล้ฉัน', dashboardSummary: 'Dashboard สรุปสถิติ', allStatistics: 'สถิติข้อมูลทั้งหมด', backHome: 'กลับหน้าหลัก', lineLengthByUnit: 'ความยาวสายแยกตามหน่วยงาน', towersByUnit: 'จำนวนเสาแยกตามหน่วยงาน', personnelByUnit: 'จำนวนบุคลากรแยกตามหน่วยงาน', voltageDistribution: 'สัดส่วนแนวสายตามระดับแรงดัน', newsBoard: 'กระดานข่าว'
+                },
+                en: {
+                    visitors: 'Visitors', adminMenu: 'Admin Menu', adminLogin: 'Admin Login', drive: 'Drive', dashboard: 'Dashboard', overallMap: 'Overall Map', favorites: 'Favorites', recent: 'Recent', refresh: 'Refresh', checkingConnection: 'Checking connection...', lastUpdatedChecking: 'Last updated: checking...', searchPlaceholder: 'Search...', newsSearchPlaceholder: 'Search news...', enableNewsNotifications: 'Enable news notifications', voiceExamples: 'Voice command examples', voiceSearchYala: 'Search Yala unit', voiceOverallMap: 'Open overall map', voiceDashboard: 'Open Dashboard', voiceNearby: 'Show nearby units', dashboardSummary: 'Statistics Dashboard', allStatistics: 'All statistics', backHome: 'Back to Home', lineLengthByUnit: 'Line length by unit', towersByUnit: 'Towers by unit', personnelByUnit: 'Personnel by unit', voltageDistribution: 'Line distribution by voltage', newsBoard: 'News Board'
+                }
+            };
+            const applyTranslations = () => {
+                const dictionary = translations[currentLanguage] || translations.th;
+                document.documentElement.lang = currentLanguage === 'en' ? 'en' : 'th';
+                document.querySelectorAll('[data-i18n]').forEach(element => {
+                    const key = element.dataset.i18n;
+                    if (dictionary[key]) element.textContent = dictionary[key];
+                });
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                    const key = element.dataset.i18nPlaceholder;
+                    if (dictionary[key]) element.placeholder = dictionary[key];
+                });
+                if (languageToggleBtn) languageToggleBtn.textContent = currentLanguage === 'th' ? 'EN' : 'ไทย';
+                if (dashboardSection && !dashboardSection.classList.contains('hidden')) dashboardBtn.textContent = currentLanguage === 'en' ? 'Back to Home' : 'กลับหน้าหลัก';
+                if (mapSection && !mapSection.classList.contains('hidden')) combinedMapBtn.textContent = currentLanguage === 'en' ? 'Back to Home' : 'กลับหน้าหลัก';
+                if (typeof renderDashboard === 'function' && !dashboardSection.classList.contains('hidden')) renderDashboard(data);
+            };
+            languageToggleBtn?.addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'th' ? 'en' : 'th';
+                localStorage.setItem('egatMapLanguage', currentLanguage);
+                applyTranslations();
+            });
 
             // ประวัติการใช้งาน: เก็บใน Firestore เพื่อให้ผู้ดูแลทุกคนเห็นข้อมูลร่วมกัน
             const historyCollection = db.collection('usageHistory');
@@ -1163,6 +1342,7 @@
             let historyUnsubscribe = null;
 
             const historyTypeLabels = {
+                admin: 'การทำงานของแอดมิน',
                 unit: 'หน่วยงาน',
                 line: 'แนวสาย/แผนที่',
                 map: 'แผนที่รวม',
@@ -1206,23 +1386,70 @@
                 .then(result => { clientAccessInfo.ip = result.ip || 'ไม่ทราบ IP'; window.clientAccessInfo = clientAccessInfo; })
                 .catch(() => { clientAccessInfo.ip = 'ไม่สามารถตรวจสอบ IP'; });
 
+            const getHistoryDate = item => item.createdAt?.toDate ? item.createdAt.toDate() : (item.timestamp ? new Date(item.timestamp) : null);
+            const getFilteredAdminHistory = () => {
+                const query = (adminHistorySearch?.value || '').trim().toLowerCase();
+                const type = adminHistoryTypeFilter?.value || '';
+                const from = adminHistoryFromDate?.value ? new Date(`${adminHistoryFromDate.value}T00:00:00`) : null;
+                const to = adminHistoryToDate?.value ? new Date(`${adminHistoryToDate.value}T23:59:59`) : null;
+                return adminHistoryItems.filter(item => {
+                    const client = item.client || {};
+                    const haystack = [item.type, item.label, item.details, item.userEmail, client.device, client.operatingSystem, client.browser, client.ip].join(' ').toLowerCase();
+                    const date = getHistoryDate(item);
+                    return (!query || haystack.includes(query)) && (!type || item.type === type) && (!from || (date && date >= from)) && (!to || (date && date <= to));
+                });
+            };
+            const renderAdminHistoryStats = history => {
+                if (!adminHistoryStats) return;
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                const todayCount = history.filter(item => { const d = getHistoryDate(item); return d && d >= today; }).length;
+                const mobileCount = history.filter(item => /มือถือ|แท็บเล็ต|mobile/i.test(item.client?.device || '')).length;
+                const types = {};
+                history.forEach(item => { const key = historyTypeLabels[item.type] || item.type || 'การใช้งาน'; types[key] = (types[key] || 0) + 1; });
+                const topType = Object.entries(types).sort((a, b) => b[1] - a[1])[0]?.[0] || '-';
+                adminHistoryStats.innerHTML = [
+                    ['กิจกรรมที่พบ', history.length, 'text-yellow-300'],
+                    ['กิจกรรมวันนี้', todayCount, 'text-green-300'],
+                    ['ใช้งานมือถือ', mobileCount, 'text-blue-300'],
+                    ['ประเภทสูงสุด', topType, 'text-purple-300']
+                ].map(([label, value, color]) => `<div class="p-3 rounded-lg bg-gray-800 border border-gray-700"><p class="text-xs text-gray-400">${label}</p><p class="text-lg font-bold ${color} truncate" title="${String(value)}">${value}</p></div>`).join('');
+            };
+            const renderAdminHistoryChart = history => {
+                if (!adminHistoryChart || typeof Chart === 'undefined') return;
+                const counts = {};
+                history.slice().reverse().forEach(item => { const d = getHistoryDate(item); if (d) { const key = d.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit' }); counts[key] = (counts[key] || 0) + 1; } });
+                if (adminHistoryChartInstance) adminHistoryChartInstance.destroy();
+                adminHistoryChartInstance = new Chart(adminHistoryChart.getContext('2d'), { type: 'line', data: { labels: Object.keys(counts), datasets: [{ label: 'กิจกรรมต่อวัน', data: Object.values(counts), borderColor: '#facc15', backgroundColor: 'rgba(250,204,21,.18)', fill: true, tension: .25 }] }, options: { responsive: true, plugins: { legend: { labels: { color: '#e5e7eb' } } }, scales: { x: { ticks: { color: '#9ca3af' } }, y: { beginAtZero: true, ticks: { color: '#9ca3af', precision: 0 } } } } });
+            };
             const renderAdminHistory = () => {
                 if (!adminHistoryList || !auth.currentUser) return;
-                const history = adminHistoryItems;
+                const history = getFilteredAdminHistory();
+                const pageSize = Number(adminHistoryPageSize?.value || 20);
+                const totalPages = Math.max(1, Math.ceil(history.length / pageSize));
+                adminHistoryPage = Math.min(adminHistoryPage, totalPages);
+                const pageItems = history.slice((adminHistoryPage - 1) * pageSize, adminHistoryPage * pageSize);
                 adminHistoryList.innerHTML = '';
-
-                if (history.length === 0) {
-                    adminHistoryList.innerHTML = '<p class="text-center text-gray-400 py-4">ยังไม่มีประวัติการใช้งาน</p>';
-                    return;
-                }
-
-                history.forEach(item => {
+                renderAdminHistoryStats(history);
+                renderAdminHistoryChart(history);
+                if (adminHistoryFilterSummary) adminHistoryFilterSummary.textContent = `พบ ${history.length} รายการ | หน้า ${adminHistoryPage}/${totalPages}`;
+                if (history.length === 0) adminHistoryList.innerHTML = '<p class="text-center text-gray-400 py-4">ไม่พบประวัติที่ตรงกับตัวกรอง</p>';
+                pageItems.forEach(item => {
                     const historyItem = document.createElement('div');
                     historyItem.className = `p-3 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-gray-100'} border-l-4 border-yellow-400`;
 
                     const title = document.createElement('p');
                     title.className = 'font-semibold text-gray-100';
                     title.textContent = `${historyTypeLabels[item.type] || 'การใช้งาน'}: ${item.label || '-'}`;
+                    const select = document.createElement('input');
+                    select.type = 'checkbox';
+                    select.className = 'history-select accent-yellow-400 mr-2';
+                    select.dataset.historyId = item.id;
+                    select.checked = selectedHistoryIds.has(item.id);
+                    select.addEventListener('change', () => {
+                        if (select.checked) selectedHistoryIds.add(item.id); else selectedHistoryIds.delete(item.id);
+                        renderAdminHistory();
+                    });
+                    title.prepend(select);
 
                     const detail = document.createElement('p');
                     detail.className = 'text-sm text-gray-300 mt-1';
@@ -1235,12 +1462,17 @@
 
                     const time = document.createElement('p');
                     time.className = 'text-xs text-gray-400 mt-2';
-                    const timestamp = item.createdAt?.toDate ? item.createdAt.toDate() : (item.timestamp ? new Date(item.timestamp) : null);
+                    const timestamp = getHistoryDate(item);
                     time.textContent = timestamp ? timestamp.toLocaleString('th-TH') : 'กำลังบันทึกเวลา...';
 
                     historyItem.append(title, detail, clientDetail, time);
                     adminHistoryList.appendChild(historyItem);
                 });
+                if (selectedHistorySummary) selectedHistorySummary.textContent = selectedHistoryIds.size ? `เลือกแล้ว ${selectedHistoryIds.size} รายการ` : '';
+                if (selectAllHistory) selectAllHistory.checked = pageItems.length > 0 && pageItems.every(item => selectedHistoryIds.has(item.id));
+                if (adminHistoryPagination) {
+                    adminHistoryPagination.innerHTML = `<button type="button" data-history-page="${adminHistoryPage - 1}" class="px-3 py-1 rounded bg-gray-700 text-white ${adminHistoryPage <= 1 ? 'opacity-40 cursor-not-allowed' : ''}" ${adminHistoryPage <= 1 ? 'disabled' : ''}>ก่อนหน้า</button><span class="text-sm text-gray-400">${adminHistoryPage} / ${totalPages}</span><button type="button" data-history-page="${adminHistoryPage + 1}" class="px-3 py-1 rounded bg-gray-700 text-white ${adminHistoryPage >= totalPages ? 'opacity-40 cursor-not-allowed' : ''}" ${adminHistoryPage >= totalPages ? 'disabled' : ''}>ถัดไป</button>`;
+                }
             };
 
             const loadAdminHistory = () => {
@@ -1271,14 +1503,60 @@
                         docs.slice(start, start + 450).forEach(doc => batch.delete(doc.ref));
                         await batch.commit();
                     }
+                    notifyAdminActivity('ล้างประวัติการใช้งานทั้งหมด', `จำนวน ${docs.length} รายการ`);
                 } catch (error) {
                     console.error('ล้างประวัติจาก Firestore ไม่สำเร็จ:', error);
                     window.alert('ไม่สามารถล้างประวัติได้ กรุณาตรวจสอบสิทธิ์ Firestore');
                 }
             };
 
+            const historyRows = history => history.map(item => {
+                const client = item.client || {};
+                const date = getHistoryDate(item);
+                return { id: item.id || '', type: historyTypeLabels[item.type] || item.type || 'การใช้งาน', label: item.label || '', details: item.details || '', email: item.userEmail || '', device: client.device || '', operatingSystem: client.operatingSystem || '', browser: client.browser || '', screen: client.screen || '', ip: client.ip || '', time: date ? date.toLocaleString('th-TH') : '' };
+            });
+            const downloadHistoryFile = (content, fileName, mimeType) => {
+                const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
+                const url = URL.createObjectURL(blob); const link = document.createElement('a');
+                link.href = url; link.download = fileName; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+            };
+            const exportHistoryCsv = () => {
+                const rows = historyRows(getFilteredAdminHistory()); if (!rows.length) return window.alert('ไม่มีประวัติสำหรับส่งออก');
+                const headers = Object.keys(rows[0]);
+                const csv = '\ufeff' + [headers, ...rows.map(row => headers.map(key => String(row[key] ?? '').replace(/"/g, '""')))].map(row => row.map(value => `"${value}"`).join(',')).join('\n');
+                downloadHistoryFile(csv, `usage-history-${new Date().toISOString().slice(0, 10)}.csv`, 'text/csv');
+                notifyAdminActivity('ส่งออกประวัติเป็น CSV', `จำนวน ${rows.length} รายการ`);
+            };
+            const exportHistoryJson = () => {
+                const rows = historyRows(getFilteredAdminHistory()); if (!rows.length) return window.alert('ไม่มีประวัติสำหรับส่งออก');
+                downloadHistoryFile(JSON.stringify(rows, null, 2), `usage-history-${new Date().toISOString().slice(0, 10)}.json`, 'application/json');
+                notifyAdminActivity('ส่งออกประวัติเป็น JSON', `จำนวน ${rows.length} รายการ`);
+            };
+            const printAdminHistory = () => {
+                const rows = historyRows(getFilteredAdminHistory()); if (!rows.length) return window.alert('ไม่มีประวัติสำหรับพิมพ์');
+                const printWindow = window.open('', '_blank'); if (!printWindow) return window.alert('กรุณาอนุญาต Pop-up เพื่อพิมพ์รายงาน');
+                const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+                printWindow.document.write(`<html lang="th"><head><meta charset="UTF-8"><title>รายงานประวัติการใช้งาน</title><style>body{font-family:Arial;padding:24px}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border:1px solid #999;padding:6px;text-align:left;vertical-align:top}th{background:#eee}</style></head><body><h2>รายงานประวัติการเปิดดูข้อมูล</h2><p>พิมพ์เมื่อ ${esc(new Date().toLocaleString('th-TH'))} | รวม ${rows.length} รายการ</p><button onclick="window.print()">พิมพ์รายงาน</button><table><thead><tr><th>เวลา</th><th>ประเภท</th><th>รายการ</th><th>รายละเอียด</th><th>ผู้ใช้</th><th>อุปกรณ์/ระบบ/เบราว์เซอร์</th><th>IP</th></tr></thead><tbody>${rows.map(row => `<tr><td>${esc(row.time)}</td><td>${esc(row.type)}</td><td>${esc(row.label)}</td><td>${esc(row.details)}</td><td>${esc(row.email)}</td><td>${esc(`${row.device} / ${row.operatingSystem} / ${row.browser}`)}</td><td>${esc(row.ip)}</td></tr>`).join('')}</tbody></table></body></html>`); printWindow.document.close();
+                notifyAdminActivity('พิมพ์รายงานประวัติ', `จำนวน ${rows.length} รายการ`);
+            };
+            const deleteHistoryDocuments = async ids => {
+                for (let start = 0; start < ids.length; start += 450) { const batch = db.batch(); ids.slice(start, start + 450).forEach(id => batch.delete(historyCollection.doc(id))); await batch.commit(); }
+            };
+            const deleteSelectedHistory = async () => {
+                const ids = [...selectedHistoryIds]; if (!ids.length) return window.alert('กรุณาเลือกรายการที่ต้องการลบ');
+                if (!window.confirm(`ยืนยันลบประวัติที่เลือก ${ids.length} รายการหรือไม่?`)) return;
+                try { await deleteHistoryDocuments(ids); ids.forEach(id => selectedHistoryIds.delete(id)); renderAdminHistory(); notifyAdminActivity('ลบประวัติที่เลือก', `จำนวน ${ids.length} รายการ`); } catch (error) { console.error(error); window.alert('ลบประวัติไม่สำเร็จ กรุณาตรวจสอบสิทธิ์ Firestore'); }
+            };
+            const deleteHistoryDateRange = async () => {
+                const history = getFilteredAdminHistory();
+                if (!adminHistoryFromDate?.value && !adminHistoryToDate?.value) return window.alert('กรุณาเลือกวันที่เริ่มต้นหรือสิ้นสุดก่อน');
+                if (!history.length) return window.alert('ไม่พบประวัติในช่วงวันที่ที่เลือก');
+                if (!window.confirm(`ยืนยันลบประวัติ ${history.length} รายการตามตัวกรองปัจจุบันหรือไม่?`)) return;
+                try { await deleteHistoryDocuments(history.map(item => item.id)); renderAdminHistory(); notifyAdminActivity('ลบประวัติตามตัวกรอง/ช่วงวันที่', `จำนวน ${history.length} รายการ`); } catch (error) { console.error(error); window.alert('ลบประวัติตามช่วงวันที่ไม่สำเร็จ กรุณาตรวจสอบสิทธิ์ Firestore'); }
+            };
+
             const notifyTelegramActivity = (type, label, details, client, userEmail) => {
-                if (!['visitor', 'unit', 'line', 'map', 'report'].includes(type)) return;
+                if (!['visitor', 'unit', 'line', 'map', 'report', 'admin'].includes(type)) return;
                 const activity = historyTypeLabels[type] || type || 'การใช้งาน';
                 const key = `${activity}|${label}|${details}`;
                 const now = Date.now();
@@ -1305,6 +1583,10 @@
                 beacon.src = `${telegramActivityUrl}?${params.toString()}`;
             };
             window.notifyTelegramActivity = notifyTelegramActivity;
+            const notifyAdminActivity = (label, details = '') => {
+                if (!auth.currentUser) return;
+                notifyTelegramActivity('admin', label, details, clientAccessInfo, auth.currentUser.email || null);
+            };
 
             if (window.pendingVisitorCount != null) {
                 notifyTelegramActivity(
@@ -1343,7 +1625,9 @@
                 try {
                     await auth.signInWithEmailAndPassword(email, password);
                     loginModal.classList.add('hidden');
+                    notifyAdminActivity('แอดมินเข้าสู่ระบบ', `อีเมล ${email}`);
                 } catch (error) {
+                    notifyTelegramActivity('admin', 'พยายามเข้าสู่ระบบแอดมินไม่สำเร็จ', `อีเมล ${email}`, clientAccessInfo, email || null);
                     // Use a custom message box instead of alert()
                     const customAlert = document.createElement('div');
                     customAlert.className = 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-600 text-white p-4 rounded-lg shadow-lg z-[200]';
@@ -1577,6 +1861,11 @@
                 const expiry = item.expiresAt?.toDate ? item.expiresAt.toDate() : new Date(item.expiryDate || item.expiresAt);
                 return Number.isFinite(expiry.getTime()) && expiry.getTime() < Date.now();
             };
+            const normalizeNewsImageUrl = value => {
+                const url = String(value || '').trim();
+                const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/i) || url.match(/[?&]id=([^&]+)/i);
+                return driveMatch ? `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1600` : url;
+            };
             const renderNews = (newsItems = currentNews) => {
                 currentNews = newsItems;
                 const readIds = readNewsIds();
@@ -1610,7 +1899,7 @@
                     const newsItemDiv = document.createElement('div');
                     newsItemDiv.className = `p-4 rounded-lg shadow-inner transition-colors duration-500 text-left ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'} ${readIds.includes(item.id) ? '' : 'border-l-4 border-yellow-400'}`;
                     newsItemDiv.innerHTML = `
-                        ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.title || 'รูปข่าว'}" class="w-full max-h-64 object-cover rounded-lg mb-3" loading="lazy">` : ''}
+                        ${item.imageUrl ? `<img src="${normalizeNewsImageUrl(item.imageUrl)}" alt="${item.title || 'รูปข่าว'}" class="w-full max-h-64 object-cover rounded-lg mb-3" loading="lazy" onerror="this.style.display='none';">` : ''}
                         <div class="flex flex-wrap items-center gap-2">
                             <p class="font-semibold text-${isDarkMode ? 'gray-200' : 'blue-400'}">${item.title || '-'}</p>
                             ${isNewsNew(item) ? '<span class="px-2 py-1 text-xs bg-red-500 text-white rounded-full">ใหม่</span>' : ''}
@@ -1720,6 +2009,39 @@
                 setTimeout(() => feedback.remove(), 5000);
             };
 
+            const newsDriveUploadUrl = 'https://script.google.com/macros/s/AKfycbz3K3g5MjYw3dOR55prVwVtzw0z-DtkWu8W0NOJW_x7hh_NvBeUbg5twZWGE9TYJvbX/exec';
+            const compressNewsImage = file => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const image = new Image();
+                    image.onload = () => {
+                        const maxSide = 1400;
+                        const scale = Math.min(1, maxSide / Math.max(image.width, image.height));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(image.width * scale));
+                        canvas.height = Math.max(1, Math.round(image.height * scale));
+                        canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+                        resolve({ dataUrl: canvas.toDataURL('image/jpeg', 0.78), name: file.name.replace(/\.[^.]+$/, '') + '.jpg' });
+                    };
+                    image.onerror = () => reject(new Error('อ่านรูปข่าวไม่สำเร็จ'));
+                    image.src = reader.result;
+                };
+                reader.onerror = () => reject(new Error('อ่านไฟล์รูปข่าวไม่สำเร็จ'));
+                reader.readAsDataURL(file);
+            });
+            const uploadNewsImage = async file => {
+                const compressed = await compressNewsImage(file);
+                const response = await fetch(newsDriveUploadUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ base64: compressed.dataUrl, mimeType: 'image/jpeg', fileName: `news-${Date.now()}-${compressed.name}`, purpose: 'news' })
+                });
+                if (!response.ok) throw new Error('เชื่อมต่อ Google Drive ไม่สำเร็จ');
+                const result = await response.json();
+                if (!result.ok) throw new Error(result.error || 'อัปโหลดรูปข่าวไม่สำเร็จ');
+                return result;
+            };
+
             const saveNews = async (e) => {
                 e.preventDefault();
                 const id = newsIdInput.value;
@@ -1728,11 +2050,19 @@
                 const link = newsLinkInput.value;
                 const category = newsCategoryInput.value.trim();
                 const author = newsAuthorInput.value.trim();
-                const imageUrl = newsImageUrlInput.value.trim();
+                let imageUrl = newsImageUrlInput.value.trim();
+                const imageSourceUrl = imageUrl;
                 const pinned = newsPinnedInput.checked;
                 const published = newsPublishedInput.checked;
 
                 try {
+                    const imageFile = newsImageFileInput?.files?.[0];
+                    if (imageFile) {
+                        newsImageUploadStatus.textContent = 'กำลังย่อและอัปโหลดรูปข่าว...';
+                        const uploaded = await uploadNewsImage(imageFile);
+                        imageUrl = uploaded.directUrl || uploaded.viewUrl || imageUrl;
+                        newsImageUploadStatus.textContent = 'อัปโหลดรูปข่าวเรียบร้อยแล้ว';
+                    }
                     if (id) {
                         // แก้ไขด้วย update เฉพาะฟิลด์ที่มีข้อมูล เพื่อรักษาฟิลด์เดิมใน Firestore
                         const updates = { updatedAt: firebase.firestore.FieldValue.serverTimestamp(), pinned, published };
@@ -1745,6 +2075,7 @@
                         updateIfNotEmpty('category', category);
                         updateIfNotEmpty('author', author);
                         updateIfNotEmpty('imageUrl', imageUrl);
+                        updateIfNotEmpty('imageSourceUrl', imageSourceUrl);
                         if (newsDateInput.value) {
                             updates.publishedAt = firebase.firestore.Timestamp.fromDate(new Date(`${newsDateInput.value}T00:00:00`));
                         }
@@ -1760,6 +2091,7 @@
                             category,
                             author,
                             imageUrl,
+                            imageSourceUrl,
                             pinned,
                             published,
                             publishedAt: newsDateInput.value ? firebase.firestore.Timestamp.fromDate(new Date(`${newsDateInput.value}T00:00:00`)) : firebase.firestore.FieldValue.serverTimestamp(),
@@ -1771,6 +2103,7 @@
                     showAdminFeedback(id ? 'แก้ไขข่าวและบันทึกข้อมูลเรียบร้อยแล้ว' : 'เพิ่มข่าวและบันทึกข้อมูลเรียบร้อยแล้ว');
                     notifyTelegramActivity('admin', id ? 'แก้ไขข่าว' : 'เพิ่มข่าว', title, clientAccessInfo, auth.currentUser?.email || null);
                     newsForm.reset();
+                    if (newsImageUploadStatus) newsImageUploadStatus.textContent = 'รูปจะถูกย่อและบีบอัดก่อนเก็บใน Google Drive';
                 } catch (error) {
                     console.error('บันทึกข่าวไม่สำเร็จ:', error);
                     showAdminFeedback('ไม่สามารถบันทึกข่าวได้ กรุณาตรวจสอบการเชื่อมต่อหรือสิทธิ์ Firebase', 'error');
@@ -1995,9 +2328,29 @@
                     }
                 });
                 cancelEditBtn.addEventListener('click', () => newsForm.reset());
-                manageNewsBtn.addEventListener('click', () => setAdminView(true));
+                manageNewsBtn.addEventListener('click', () => { setAdminView(true); notifyAdminActivity('เปิดเมนูแอดมิน'); });
                 manageNewsBtn.addEventListener('click', renderAdminHistory);
                 clearHistoryBtn.onclick = clearAdminHistory;
+                exportHistoryCsvBtn?.addEventListener('click', exportHistoryCsv);
+                exportHistoryJsonBtn?.addEventListener('click', exportHistoryJson);
+                printHistoryBtn?.addEventListener('click', printAdminHistory);
+                deleteSelectedHistoryBtn?.addEventListener('click', deleteSelectedHistory);
+                deleteHistoryDateRangeBtn?.addEventListener('click', deleteHistoryDateRange);
+                selectAllHistory?.addEventListener('change', () => {
+                    getFilteredAdminHistory().slice((adminHistoryPage - 1) * Number(adminHistoryPageSize?.value || 20), adminHistoryPage * Number(adminHistoryPageSize?.value || 20)).forEach(item => selectAllHistory.checked ? selectedHistoryIds.add(item.id) : selectedHistoryIds.delete(item.id));
+                    renderAdminHistory();
+                });
+                [adminHistorySearch, adminHistoryTypeFilter, adminHistoryFromDate, adminHistoryToDate].forEach(element => {
+                    element?.addEventListener('input', () => { adminHistoryPage = 1; renderAdminHistory(); });
+                    element?.addEventListener('change', () => { adminHistoryPage = 1; renderAdminHistory(); });
+                });
+                adminHistoryPageSize?.addEventListener('change', () => { adminHistoryPage = 1; renderAdminHistory(); });
+                adminHistoryPagination?.addEventListener('click', event => {
+                    const button = event.target.closest('[data-history-page]');
+                    if (!button || button.disabled) return;
+                    adminHistoryPage = Math.max(1, Number(button.dataset.historyPage) || 1);
+                    renderAdminHistory();
+                });
                 adminReportSearch.addEventListener('input', renderAdminReports);
                 adminReportStatusFilter.addEventListener('change', renderAdminReports);
                 adminReportsList.addEventListener('change', event => {
@@ -2189,19 +2542,20 @@
                     }
                 };
 
+                const en = currentLanguage === 'en';
                 dashboardCharts.lineLength = new Chart(document.getElementById('lineLengthChart'), {
                     type: 'bar',
-                    data: { labels, datasets: [{ label: 'ความยาวสาย (Km)', data: stats.map(item => item.length), backgroundColor: '#22c55e' }] },
+                    data: { labels, datasets: [{ label: en ? 'Line length (Km)' : 'ความยาวสาย (Km)', data: stats.map(item => item.length), backgroundColor: '#22c55e' }] },
                     options: commonOptions
                 });
                 dashboardCharts.towers = new Chart(document.getElementById('towerChart'), {
                     type: 'bar',
-                    data: { labels, datasets: [{ label: 'จำนวนเสา', data: stats.map(item => item.towers), backgroundColor: '#f97316' }] },
+                    data: { labels, datasets: [{ label: en ? 'Tower count' : 'จำนวนเสา', data: stats.map(item => item.towers), backgroundColor: '#f97316' }] },
                     options: commonOptions
                 });
                 dashboardCharts.personnel = new Chart(document.getElementById('personnelChart'), {
                     type: 'bar',
-                    data: { labels, datasets: [{ label: 'จำนวนบุคลากร', data: stats.map(item => item.personnel), backgroundColor: '#a855f7' }] },
+                    data: { labels, datasets: [{ label: en ? 'Personnel count' : 'จำนวนบุคลากร', data: stats.map(item => item.personnel), backgroundColor: '#a855f7' }] },
                     options: commonOptions
                 });
 
@@ -2220,7 +2574,7 @@
                     data: {
                         labels: Object.keys(voltageCounts),
                         datasets: [{
-                            label: 'จำนวนแนวสาย',
+                            label: en ? 'Line count' : 'จำนวนแนวสาย',
                             data: Object.values(voltageCounts),
                             backgroundColor: ['#3b82f6', '#14b8a6', '#eab308', '#f97316', '#ef4444', '#6b7280'],
                             borderColor: '#374151',
@@ -2256,14 +2610,15 @@
                 const longestLineUnit = unitStats.reduce((max, item) => item.length > max.length ? item : max, { unit: '-', length: 0 });
                 const mostTowerUnit = unitStats.reduce((max, item) => item.towers > max.towers ? item : max, { unit: '-', towers: 0 });
 
+                const en = currentLanguage === 'en';
                 const cards = [
-                    ['หน่วยงานทั้งหมด', formatNumber(sourceData.length), 'หน่วย', 'bg-blue-600'],
-                    ['แนวสายทั้งหมด', formatNumber(totalLines), 'แนวสาย', 'bg-indigo-600'],
-                    ['ความยาวสายรวม', formatNumber(totalLength), 'Km', 'bg-green-600'],
-                    ['จำนวนเสารวม', formatNumber(totalTowers, 0), 'ต้น', 'bg-orange-600'],
-                    ['บุคลากรรวม', formatNumber(totalPersonnel), 'คน', 'bg-purple-600'],
-                    ['หน่วยงานที่มีสายยาวที่สุด', longestLineUnit.unit, `${formatNumber(longestLineUnit.length)} Km`, 'bg-teal-600'],
-                    ['หน่วยงานที่มีจำนวนเสามากที่สุด', mostTowerUnit.unit, `${formatNumber(mostTowerUnit.towers, 0)} ต้น`, 'bg-red-600']
+                    [en ? 'Total units' : 'หน่วยงานทั้งหมด', formatNumber(sourceData.length), en ? 'units' : 'หน่วย', 'bg-blue-600'],
+                    [en ? 'Total lines' : 'แนวสายทั้งหมด', formatNumber(totalLines), en ? 'lines' : 'แนวสาย', 'bg-indigo-600'],
+                    [en ? 'Total line length' : 'ความยาวสายรวม', formatNumber(totalLength), 'Km', 'bg-green-600'],
+                    [en ? 'Total towers' : 'จำนวนเสารวม', formatNumber(totalTowers, 0), en ? 'towers' : 'ต้น', 'bg-orange-600'],
+                    [en ? 'Total personnel' : 'บุคลากรรวม', formatNumber(totalPersonnel), en ? 'people' : 'คน', 'bg-purple-600'],
+                    [en ? 'Unit with longest lines' : 'หน่วยงานที่มีสายยาวที่สุด', longestLineUnit.unit, `${formatNumber(longestLineUnit.length)} Km`, 'bg-teal-600'],
+                    [en ? 'Unit with most towers' : 'หน่วยงานที่มีจำนวนเสามากที่สุด', mostTowerUnit.unit, `${formatNumber(mostTowerUnit.towers, 0)} ${en ? 'towers' : 'ต้น'}`, 'bg-red-600']
                 ];
 
                 dashboardContent.innerHTML = cards.map(([title, value, suffix, color]) => `
@@ -2275,8 +2630,8 @@
                 `).join('');
                 if (dashboardScope) {
                     dashboardScope.textContent = sourceData.length === data.length
-                        ? 'สถิติข้อมูลทั้งหมด'
-                        : `สถิติตามผลการค้นหา ${sourceData.length} หน่วยงาน`;
+                        ? (en ? 'All statistics' : 'สถิติข้อมูลทั้งหมด')
+                        : (en ? `Statistics for ${sourceData.length} filtered units` : `สถิติตามผลการค้นหา ${sourceData.length} หน่วยงาน`);
                 }
                 renderDashboardCharts(sourceData);
             };
@@ -2385,6 +2740,8 @@
                 setDashboardView(dashboardSection.classList.contains('hidden'));
             });
             closeDashboardBtn.addEventListener('click', () => setDashboardView(false));
+            combinedMapBtn.addEventListener('click', () => setCombinedMapView(mapSection.classList.contains('hidden')));
+            closeCombinedMapBtn.addEventListener('click', () => setCombinedMapView(false));
             
             themeToggle.addEventListener('click', () => {
                 isDarkMode = !isDarkMode;
@@ -2460,6 +2817,7 @@
             });
 
             loginForm.addEventListener('submit', handleLogin);
+            applyTranslations();
             
             auth.onAuthStateChanged((user) => {
                 if (user) {
