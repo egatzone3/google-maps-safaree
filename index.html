@@ -2037,6 +2037,7 @@
             let activeAdminPopupId = null;
             let adminPopupTimer = null;
             let adminPopupItems = [];
+            let adminPopupIndex = 0;
             let adminPopupUnsubscribe = null;
             const announcementDismissKey = 'egatMapAnnouncementDismissed';
             const getAnnouncementItems = newsItems => newsItems
@@ -2090,23 +2091,25 @@
                 if (!adminPopupNotice) return;
                 if (adminPopupTimer) clearTimeout(adminPopupTimer);
                 const now = new Date();
-                const popup = adminPopupItems.filter(item => {
+                const activePopups = adminPopupItems.filter(item => {
                     if (item.enabled === false) return false;
                     const start = getPopupDate(item.popupStartAt);
                     const end = getPopupDate(item.popupEndAt);
                     return (!start || Number.isNaN(start.getTime()) || now >= start) && (!end || Number.isNaN(end.getTime()) || now <= end);
-                }).sort((first, second) => getPopupDate(second.updatedAt) - getPopupDate(first.updatedAt))[0];
+                }).sort((first, second) => (getPopupDate(second.updatedAt)?.getTime() || 0) - (getPopupDate(first.updatedAt)?.getTime() || 0));
+                if (adminPopupIndex >= activePopups.length) adminPopupIndex = 0;
+                const popup = activePopups.length ? activePopups[adminPopupIndex] : null;
                 if (!popup) {
                     activeAdminPopupId = null;
                     adminPopupNotice.classList.add('hidden');
                     return;
                 }
+                adminPopupIndex = (adminPopupIndex + 1) % activePopups.length;
                 activeAdminPopupId = popup.id;
                 adminPopupTitle.textContent = 'ข้อความจากแอดมิน';
                 adminPopupContent.textContent = popup.message || '';
                 adminPopupNotice.classList.remove('hidden');
-                const popupEnd = getPopupDate(popup.popupEndAt);
-                if (popupEnd && popupEnd > now) adminPopupTimer = setTimeout(() => updateAdminPopup(), popupEnd.getTime() - now.getTime() + 1000);
+                adminPopupTimer = setTimeout(() => updateAdminPopup(), 8000);
             };
             adminPopupCloseBtn?.addEventListener('click', () => {
                 adminPopupNotice?.classList.add('hidden');
