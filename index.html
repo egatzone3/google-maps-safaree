@@ -56,7 +56,7 @@
         <div class="max-w-7xl mx-auto flex items-center gap-2 px-3 py-2">
             <span class="shrink-0 px-2 py-1 rounded-md bg-yellow-400 text-blue-950 font-bold text-sm">📢 <span id="announcementLabel">ข่าวสาร</span></span>
             <div class="egat-announcement-track flex-1 text-sm md:text-base" aria-live="polite">
-                <span id="announcementText" class="egat-announcement-text">กำลังโหลดประกาศอัปเดต...</span>
+                <span id="announcementText" class="egat-announcement-text">ยินดีต้อนรับสู่แผนที่นำทางสายส่งแรงสูง</span>
             </div>
             <button type="button" id="announcementPauseBtn" class="shrink-0 hidden sm:inline-flex px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 text-xs" title="หยุดหรือเล่นข้อความ">หยุด</button>
             <button type="button" id="announcementCloseBtn" class="shrink-0 w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-lg leading-none" title="ปิดประกาศ" aria-label="ปิดประกาศ">×</button>
@@ -628,8 +628,8 @@
                         </div>
                     </form>
                     <section id="adminPopupManager" class="order-3 mt-8 border-t border-indigo-500/40 pt-6">
-                        <h5 class="text-lg font-bold text-indigo-300 mb-1">ป๊อปอัพข้อความแอดมิน</h5>
-                        <p class="text-xs text-gray-400 mb-4">ข้อความส่วนนี้แยกจากข่าวสาร ใช้แจ้งผู้ใช้งานโดยตรง และกำหนดช่วงเวลาแสดงได้</p>
+                        <h5 class="text-lg font-bold text-indigo-300 mb-1">ข้อความแอดมินสำหรับแถบวิ่ง</h5>
+                        <p class="text-xs text-gray-400 mb-4">ข้อความส่วนนี้จะแสดงรวมในแถบข้อความวิ่งด้านล่าง และกำหนดช่วงเวลาแสดงได้</p>
                         <form id="adminPopupForm" class="space-y-3">
                             <input type="hidden" id="adminPopupId">
                             <textarea id="adminPopupMessage" rows="3" required placeholder="พิมพ์ข้อความที่ต้องการแจ้งผู้ใช้งาน..." class="block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
@@ -638,7 +638,7 @@
                                 <div><label for="adminPopupEnd" class="block text-xs text-gray-400">ยุติการแสดงวันที่และเวลา</label><input type="datetime-local" id="adminPopupEnd" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"></div>
                             </div>
                             <label class="flex items-center gap-2 text-sm text-gray-300"><input type="checkbox" id="adminPopupEnabled" class="h-4 w-4" checked> เปิดใช้งานข้อความนี้</label>
-                            <div class="flex flex-wrap gap-2"><button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">บันทึกข้อความป๊อปอัพ</button><button type="button" id="adminPopupCancelBtn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500">ยกเลิก</button></div>
+                            <div class="flex flex-wrap gap-2"><button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">บันทึกข้อความแถบวิ่ง</button><button type="button" id="adminPopupCancelBtn" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500">ยกเลิก</button></div>
                         </form>
                         <div id="adminPopupList" class="mt-4 space-y-2"></div>
                     </section>
@@ -2054,6 +2054,9 @@
                 { id: 'fallback-1', message: 'ยินดีต้อนรับสู่แผนที่นำทางสายส่งแรงสูง', enabled: true },
                 { id: 'fallback-2', message: 'ติดตามข่าวสารและประกาศล่าสุดจากหน่วยงาน', enabled: true }
             ];
+            let firestoreTickerMessages = [];
+            let adminTickerMessages = [];
+            const refreshTickerMessages = () => updateAnnouncementBar([...firestoreTickerMessages, ...adminTickerMessages]);
             const getAnnouncementItems = tickerMessages => (tickerMessages || [])
                 .filter(item => item.enabled !== false)
                 .filter(item => {
@@ -2084,6 +2087,9 @@
             };
             const updateAnnouncementBar = newsItems => {
                 if (!announcementBar || !announcementText) return;
+                announcementBar.classList.remove('hidden');
+                announcementBar.style.display = 'block';
+                announcementText.style.display = 'inline-block';
                 announcementItems = getAnnouncementItems(newsItems || []);
                 announcementIndex = 0;
                 if (announcementTimer) clearInterval(announcementTimer);
@@ -2094,14 +2100,12 @@
                     announcementText.style.animation = 'none';
                     announcementText.style.webkitAnimation = 'none';
                     announcementText.style.paddingLeft = '0';
-                    announcementBar.classList.remove('hidden');
                     return;
                 }
                 showAnnouncementItem();
                 // Always show the ticker when published news is available.
                 // Do not inherit a stale dismiss flag from an earlier deployment.
                 sessionStorage.removeItem(announcementDismissKey);
-                announcementBar.classList.remove('hidden');
                 if (announcementItems.length > 1) {
                     announcementTimer = setInterval(() => {
                         if (announcementPaused) return;
@@ -2121,41 +2125,11 @@
             });
             const getPopupDate = value => value?.toDate ? value.toDate() : (value ? new Date(value) : null);
             const updateAdminPopup = () => {
-                if (!adminPopupNotice) return;
-                if (adminPopupTimer) clearTimeout(adminPopupTimer);
-                const now = new Date();
-                if (adminPopupCooldownUntil > Date.now()) {
-                    activeAdminPopupId = null;
-                    adminPopupNotice.classList.add('hidden');
-                    adminPopupTimer = setTimeout(() => updateAdminPopup(), adminPopupCooldownUntil - Date.now() + 50);
-                    return;
-                }
-                adminPopupCooldownUntil = 0;
-                const activePopups = adminPopupItems.filter(item => {
-                    if (item.enabled === false) return false;
-                    const start = getPopupDate(item.popupStartAt);
-                    const end = getPopupDate(item.popupEndAt);
-                    return (!start || Number.isNaN(start.getTime()) || now >= start) && (!end || Number.isNaN(end.getTime()) || now <= end);
-                }).sort((first, second) => (getPopupDate(second.updatedAt)?.getTime() || 0) - (getPopupDate(first.updatedAt)?.getTime() || 0));
-                if (adminPopupIndex >= activePopups.length) adminPopupIndex = 0;
-                const popup = activePopups.length ? activePopups[adminPopupIndex] : null;
-                if (!popup) {
-                    activeAdminPopupId = null;
-                    adminPopupNotice.classList.add('hidden');
-                    return;
-                }
-                adminPopupIndex = (adminPopupIndex + 1) % activePopups.length;
-                activeAdminPopupId = popup.id;
-                adminPopupTitle.textContent = 'ข้อความจากแอดมิน';
-                adminPopupContent.textContent = popup.message || '';
-                adminPopupNotice.classList.remove('hidden');
-                adminPopupTimer = setTimeout(() => updateAdminPopup(), 8000);
+                // Admin messages are displayed in the bottom ticker, not as a popup.
+                adminPopupNotice?.classList.add('hidden');
             };
             adminPopupCloseBtn?.addEventListener('click', () => {
-                adminPopupCooldownUntil = Date.now() + adminPopupCooldownMs;
-                if (adminPopupTimer) clearTimeout(adminPopupTimer);
                 adminPopupNotice?.classList.add('hidden');
-                adminPopupTimer = setTimeout(() => updateAdminPopup(), adminPopupCooldownMs + 50);
             });
 
             const readNewsIds = () => {
@@ -2312,11 +2286,12 @@
             };
             const loadTickerMessages = () => {
                 db.collection('tickerMessages').onSnapshot(snapshot => {
-                    const tickerMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    updateAnnouncementBar(tickerMessages);
+                    firestoreTickerMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    refreshTickerMessages();
                 }, error => {
                     console.error('โหลด tickerMessages ไม่สำเร็จ:', error);
-                    updateAnnouncementBar([]);
+                    firestoreTickerMessages = [];
+                    refreshTickerMessages();
                 });
             };
 
@@ -2365,9 +2340,14 @@
                 if (adminPopupUnsubscribe) adminPopupUnsubscribe();
                 adminPopupUnsubscribe = db.collection('adminPopups').onSnapshot(snapshot => {
                     adminPopupItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    adminPopupIndex = 0;
                     renderAdminPopupList();
                     updateAdminPopup();
-                }, error => console.error('โหลดป๊อปอัพแอดมินไม่สำเร็จ:', error));
+                }, error => {
+                    console.error('โหลดป๊อปอัพแอดมินไม่สำเร็จ:', error);
+                    setTimeout(() => updateAdminPopup(), 1200);
+                });
+                setTimeout(() => updateAdminPopup(), 1200);
             };
             adminPopupForm?.addEventListener('submit', async event => {
                 event.preventDefault();
