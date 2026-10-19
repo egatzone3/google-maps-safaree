@@ -576,6 +576,11 @@
                             <textarea id="newsText" rows="3" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
                         </div>
                         <div>
+                            <label for="tickerMessage" class="block text-sm font-medium text-yellow-300">ข้อความสำหรับแถบวิ่ง</label>
+                            <textarea id="tickerMessage" rows="2" placeholder="เว้นว่างเพื่อสร้างจากหัวข้อข่าวและเนื้อหาอัตโนมัติ" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-yellow-600/60 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500"></textarea>
+                            <p class="text-xs text-gray-500 mt-1">เมื่อบันทึกหรือแก้ไขข่าว ระบบจะนำข้อความนี้ไปเก็บใน tickerMessages โดยอัตโนมัติ</p>
+                        </div>
+                        <div>
                             <label for="newsLink" class="block text-sm font-medium text-gray-400">ลิงก์</label>
                             <input type="url" id="newsLink" class="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         </div>
@@ -1387,6 +1392,7 @@
             const newsIdInput = document.getElementById('newsId');
             const newsTitleInput = document.getElementById('newsTitle');
             const newsTextInput = document.getElementById('newsText');
+            const tickerMessageInput = document.getElementById('tickerMessage');
             const newsLinkInput = document.getElementById('newsLink');
             const newsCategoryInput = document.getElementById('newsCategory');
             const newsDateInput = document.getElementById('newsDate');
@@ -2041,25 +2047,33 @@
             let adminPopupItems = [];
             let adminPopupIndex = 0;
             let adminPopupUnsubscribe = null;
-            const adminPopupCooldownKey = 'egatMapAdminPopupCooldownUntil';
             const adminPopupCooldownMs = 5 * 60 * 1000;
+            let adminPopupCooldownUntil = 0;
             const announcementDismissKey = 'egatMapAnnouncementDismissed';
-            const getAnnouncementItems = newsItems => newsItems
-                .filter(item => item.published !== false && !isNewsExpired(item))
-                .sort((first, second) => Number(Boolean(second.pinned)) - Number(Boolean(first.pinned)) || getNewsDate(second) - getNewsDate(first));
+            const tickerFallbackMessages = [
+                { id: 'fallback-1', message: 'ยินดีต้อนรับสู่แผนที่นำทางสายส่งแรงสูง', enabled: true },
+                { id: 'fallback-2', message: 'ติดตามข่าวสารและประกาศล่าสุดจากหน่วยงาน', enabled: true }
+            ];
+            const getAnnouncementItems = tickerMessages => (tickerMessages || [])
+                .filter(item => item.enabled !== false)
+                .filter(item => {
+                    const now = Date.now();
+                    const start = item.startAt?.toDate ? item.startAt.toDate().getTime() : (item.startAt ? new Date(item.startAt).getTime() : 0);
+                    const end = item.endAt?.toDate ? item.endAt.toDate().getTime() : (item.endAt ? new Date(item.endAt).getTime() : 0);
+                    return (!start || Number.isNaN(start) || now >= start) && (!end || Number.isNaN(end) || now <= end);
+                })
+                .sort((first, second) => (second.order ?? 0) - (first.order ?? 0) || (second.updatedAt?.seconds || 0) - (first.updatedAt?.seconds || 0));
             const showAnnouncementItem = () => {
                 const announcement = announcementItems[announcementIndex];
                 if (!announcement || !announcementText) return;
-                const title = String(announcement.title || '').trim();
-                const content = String(announcement.content || '').replace(/\s+/g, ' ').trim();
-                const shortContent = content.length > 260 ? `${content.slice(0, 260)}...` : content;
+                const message = String(announcement.message || '').replace(/\s+/g, ' ').trim();
                 announcementText.classList.remove('is-running');
                 announcementText.style.animation = 'none';
                 announcementText.style.webkitAnimation = 'none';
                 announcementText.style.paddingLeft = '0';
                 announcementText.style.transform = 'translateX(0)';
                 void announcementText.offsetWidth;
-                announcementText.textContent = `${announcement.pinned ? 'ข่าวสำคัญ: ' : ''}${title || 'มีการอัปเดตข้อมูลในระบบ'}${shortContent ? ` — ${shortContent}` : ''}`;
+                announcementText.textContent = message || 'มีการอัปเดตข้อมูลในระบบ';
                 announcementText.style.animation = '';
                 announcementText.style.webkitAnimation = '';
                 announcementText.style.paddingLeft = '';
@@ -2074,7 +2088,9 @@
                 announcementIndex = 0;
                 if (announcementTimer) clearInterval(announcementTimer);
                 if (!announcementItems.length) {
-                    announcementText.textContent = 'กำลังโหลดข่าวสาร หรือยังไม่มีข่าวสารที่เผยแพร่';
+                    announcementItems = getAnnouncementItems(tickerFallbackMessages);
+                    announcementIndex = 0;
+                    showAnnouncementItem();
                     announcementText.style.animation = 'none';
                     announcementText.style.webkitAnimation = 'none';
                     announcementText.style.paddingLeft = '0';
@@ -2108,14 +2124,13 @@
                 if (!adminPopupNotice) return;
                 if (adminPopupTimer) clearTimeout(adminPopupTimer);
                 const now = new Date();
-                const cooldownUntil = Number(localStorage.getItem(adminPopupCooldownKey) || 0);
-                if (cooldownUntil > Date.now()) {
+                if (adminPopupCooldownUntil > Date.now()) {
                     activeAdminPopupId = null;
                     adminPopupNotice.classList.add('hidden');
-                    adminPopupTimer = setTimeout(() => updateAdminPopup(), cooldownUntil - Date.now() + 50);
+                    adminPopupTimer = setTimeout(() => updateAdminPopup(), adminPopupCooldownUntil - Date.now() + 50);
                     return;
                 }
-                if (cooldownUntil) localStorage.removeItem(adminPopupCooldownKey);
+                adminPopupCooldownUntil = 0;
                 const activePopups = adminPopupItems.filter(item => {
                     if (item.enabled === false) return false;
                     const start = getPopupDate(item.popupStartAt);
@@ -2137,7 +2152,7 @@
                 adminPopupTimer = setTimeout(() => updateAdminPopup(), 8000);
             };
             adminPopupCloseBtn?.addEventListener('click', () => {
-                localStorage.setItem(adminPopupCooldownKey, String(Date.now() + adminPopupCooldownMs));
+                adminPopupCooldownUntil = Date.now() + adminPopupCooldownMs;
                 if (adminPopupTimer) clearTimeout(adminPopupTimer);
                 adminPopupNotice?.classList.add('hidden');
                 adminPopupTimer = setTimeout(() => updateAdminPopup(), adminPopupCooldownMs + 50);
@@ -2174,7 +2189,6 @@
             };
             const renderNews = (newsItems = currentNews) => {
                 currentNews = newsItems;
-                updateAnnouncementBar(newsItems);
                 updateAdminPopup();
                 const readIds = readNewsIds();
                 const searchTerm = normalizeSearchText(newsSearchInput.value);
@@ -2294,6 +2308,15 @@
                     // Keep the ticker visible on mobile browsers even when Firebase is slow/offline.
                     updateAnnouncementBar([]);
                     window.updateConnectionStatus(navigator.onLine ? 'error' : 'offline', navigator.onLine ? 'ไม่สามารถโหลดข่าวได้' : 'อยู่ในโหมดออฟไลน์');
+                });
+            };
+            const loadTickerMessages = () => {
+                db.collection('tickerMessages').onSnapshot(snapshot => {
+                    const tickerMessages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    updateAnnouncementBar(tickerMessages);
+                }, error => {
+                    console.error('โหลด tickerMessages ไม่สำเร็จ:', error);
+                    updateAnnouncementBar([]);
                 });
             };
 
@@ -2416,6 +2439,7 @@
                 const id = newsIdInput.value;
                 const title = newsTitleInput.value;
                 const content = newsTextInput.value;
+                const tickerMessage = tickerMessageInput.value.trim() || [title.trim(), content.trim()].filter(Boolean).join(' — ');
                 const link = newsLinkInput.value;
                 const category = newsCategoryInput.value.trim();
                 const author = newsAuthorInput.value.trim();
@@ -2423,6 +2447,7 @@
                 const imageSourceUrl = imageUrl;
                 const pinned = newsPinnedInput.checked;
                 const published = newsPublishedInput.checked;
+                let savedNewsId = id;
 
                 try {
                     const imageFile = newsImageFileInput?.files?.[0];
@@ -2434,7 +2459,7 @@
                     }
                     if (id) {
                         // แก้ไขด้วย update เฉพาะฟิลด์ที่มีข้อมูล เพื่อรักษาฟิลด์เดิมใน Firestore
-                        const updates = { updatedAt: firebase.firestore.FieldValue.serverTimestamp(), pinned, published };
+                        const updates = { updatedAt: firebase.firestore.FieldValue.serverTimestamp(), pinned, published, tickerMessage };
                         const updateIfNotEmpty = (field, value) => {
                             if (value !== '') updates[field] = value;
                         };
@@ -2456,6 +2481,7 @@
                         const newsItem = {
                             title: title.trim(),
                             content: content.trim(),
+                            tickerMessage,
                             link: link.trim(),
                             category,
                             author,
@@ -2467,8 +2493,17 @@
                             expiresAt: newsExpiryInput.value ? firebase.firestore.Timestamp.fromDate(new Date(`${newsExpiryInput.value}T23:59:59`)) : null,
                             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                         };
-                        await db.collection("news").add(newsItem);
+                        const createdNews = await db.collection("news").add(newsItem);
+                        savedNewsId = createdNews.id;
                     }
+                    await db.collection('tickerMessages').doc(savedNewsId).set({
+                        message: tickerMessage || 'มีการอัปเดตข้อมูลในระบบ',
+                        enabled: published,
+                        sourceNewsId: savedNewsId,
+                        startAt: newsDateInput.value ? firebase.firestore.Timestamp.fromDate(new Date(`${newsDateInput.value}T00:00:00`)) : null,
+                        endAt: newsExpiryInput.value ? firebase.firestore.Timestamp.fromDate(new Date(`${newsExpiryInput.value}T23:59:59`)) : null,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
                     showAdminFeedback(id ? 'แก้ไขข่าวและบันทึกข้อมูลเรียบร้อยแล้ว' : 'เพิ่มข่าวและบันทึกข้อมูลเรียบร้อยแล้ว');
                     notifyTelegramActivity('admin', id ? 'แก้ไขข่าว' : 'เพิ่มข่าว', title, clientAccessInfo, auth.currentUser?.email || null);
                     newsForm.reset();
@@ -2486,6 +2521,7 @@
                     newsIdInput.value = doc.id;
                     newsTitleInput.value = item.title;
                     newsTextInput.value = item.content;
+                    tickerMessageInput.value = item.tickerMessage || [item.title, item.content].filter(Boolean).join(' — ');
                     newsLinkInput.value = item.link;
                     newsCategoryInput.value = item.category || '';
                     newsDateInput.value = item.publishedAt?.toDate ? item.publishedAt.toDate().toISOString().slice(0, 10) : (item.date || '');
@@ -2513,6 +2549,7 @@
                 document.getElementById('confirmYes').addEventListener('click', async () => {
                     try {
                         await db.collection("news").doc(id).delete();
+                        await db.collection('tickerMessages').doc(id).delete();
                         notifyTelegramActivity('admin', 'ลบข่าว', `รหัสข่าว: ${id}`, clientAccessInfo, auth.currentUser?.email || null);
                         customConfirm.remove();
                     } catch (error) {
@@ -3041,6 +3078,7 @@
             
             // This function now handles all news data fetching and rendering
             loadNews();
+            loadTickerMessages();
 
             [searchInput, cableFilter, responsibleFilter, personnelFilter, minLengthFilter, maxLengthFilter]
                 .forEach(input => input.addEventListener('input', applyAdvancedFilters));
