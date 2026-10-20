@@ -1,4 +1,4 @@
-const CACHE_NAME = 'egat-map-cache-v16';
+const CACHE_NAME = 'egat-map-cache-v17';
 
 const urlsToCache = [
   './',
