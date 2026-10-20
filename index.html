@@ -25,6 +25,11 @@
         .egat-announcement-bar:hover .egat-announcement-text,
         .egat-announcement-bar:focus-within .egat-announcement-text { animation-play-state: paused; }
         @media (prefers-reduced-motion: reduce) { .egat-announcement-text, .egat-announcement-text.is-running { animation: none; -webkit-animation: none; padding-left: 0; transform: translateX(0); } }
+        /* บนมือถือและ iPad ให้ข้อความอยู่ในจอเสมอ ไม่เลื่อนหายออกด้านข้าง */
+        @media (max-width: 1024px) {
+            .egat-announcement-text.is-running { padding-left: 0; transform: translateX(0); animation: none; -webkit-animation: none; }
+            .egat-announcement-track { min-height: 24px; display: flex; align-items: center; }
+        }
         .egat-speed-item { position: relative; overflow: hidden; color: #fff; min-height: 64px; display: flex; align-items: center; padding: 8px 18px 8px 28px; clip-path: polygon(9% 0, 100% 0, 91% 100%, 0 100%); }
         .egat-speed-item::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,.08); transform: skewX(-12deg) translateX(-115%); transition: transform .35s ease; }
         .egat-speed-item:hover::after { transform: skewX(-12deg) translateX(115%); }
@@ -2095,6 +2100,11 @@
                     announcementText.style.webkitAnimation = 'none';
                     announcementText.style.paddingLeft = '0';
                     announcementBar.classList.remove('hidden');
+                    announcementTimer = setInterval(() => {
+                        if (announcementPaused) return;
+                        announcementIndex = (announcementIndex + 1) % announcementItems.length;
+                        showAnnouncementItem();
+                    }, 9000);
                     return;
                 }
                 showAnnouncementItem();
